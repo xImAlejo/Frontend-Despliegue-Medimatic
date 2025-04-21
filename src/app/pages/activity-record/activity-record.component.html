@@ -1,0 +1,156 @@
+<div *ngIf="this.userobject.rol == 2 || this.userobject.rol == 1">
+  <app-header-activity></app-header-activity>
+</div>
+<div *ngIf="this.userobject.rol == 3">
+  <app-header-activity-others></app-header-activity-others>
+</div>
+<div class="p-6">
+  <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center gap-2">
+      <div class="pb-5">
+        <label class="font-semibold">PERSONAL:</label>
+      </div>
+      <mat-form-field appearance="outline" class="w-48">
+        <mat-label>Personal:</mat-label>
+        <mat-select [(ngModel)]="activityobject.user">
+          <mat-option *ngFor="let user of userlist" [value]="user.id">
+            {{ user.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="pb-5">
+        <button mat-raised-button class="bg-green-300 px-6 text-black rounded border border-black" (click)="deployActivitiesbyUser(activityobject.user)">VER</button>
+      </div>
+    </div>
+
+    <div class="flex gap-2 pb-5">
+      <button mat-raised-button class="bg-green-300 px-6 text-black rounded border border-black" (click)="isEditMode = true">EDITAR</button>
+      <button mat-raised-button class="bg-green-300 px-6 text-black rounded border border-black" (click)="saveChanges()">GUARDAR</button>
+    </div>
+  </div>
+
+  <!-- Tabla -->
+  <div class="overflow-auto shadow-md rounded border border-gray-300 max-h-[500px]">
+    <table mat-table [dataSource]="activitylist" class="min-w-full mat-elevation-z1">
+
+      <!-- Define columnas -->
+      <ng-container matColumnDef="pos">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">#</th>
+        <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="tarea">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">TAREA</th>
+        <td mat-cell *matCellDef="let element">{{ element.task }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="detalle">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">DETALLE</th>
+        <td mat-cell *matCellDef="let element">{{ element.detail }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="area_o_proyecto">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">AREA O PROYECTO</th>
+        <td mat-cell *matCellDef="let element">{{ element.area }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="prioridad">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">PRIORIDAD</th>
+        <td mat-cell *matCellDef="let element">
+          <ng-container *ngIf="isEditMode && (this.userobject.rol == 2 || this.userobject.rol == 1); else priorityText">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-select [(ngModel)]="element.priority">
+                <mat-option *ngFor="let priority of prioritybox" [value]="priority">
+                  {{ priority }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-container>
+          <ng-template #priorityText>{{ element.priority }}</ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="fecha_de_asignacion">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">FECHA DE ASIGNACION</th>
+        <td mat-cell *matCellDef="let element">{{ element.asignation_date | date: 'dd/MM/yyyy HH:mm:ss': 'UTC'}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="fecha_limite">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">FECHA LIMITE</th>
+        <td mat-cell *matCellDef="let element">{{ element.limit_date | date: 'dd/MM/yyyy HH:mm:ss': 'UTC'}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="finalization_date">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">FECHA DE FINALIZACION</th>
+        <td mat-cell *matCellDef="let element">{{ element.finalization_date | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="estado">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">ESTADO</th>
+        <td mat-cell *matCellDef="let element">
+          <ng-container *ngIf="isEditMode; else estadoText">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-select [(ngModel)]="element.state">
+                <mat-option *ngFor="let state of states" [value]="state">
+                  {{ state }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-container>
+          <ng-template #estadoText>{{ element.state }}</ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="progreso">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">PROGRESO</th>
+        <td mat-cell *matCellDef="let element">
+          <ng-container *ngIf="isEditMode; else progresoText">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-select [(ngModel)]="element.progress">
+                <mat-option *ngFor="let progress of progressOptions" [value]="progress">
+                  {{ progress }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-container>
+          <ng-template #progresoText>{{ element.progress }}</ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="done">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">DONE</th>
+        <td mat-cell *matCellDef="let element">
+          <mat-checkbox
+          [checked]="element.done == 1"
+          (change)="onDoneChange($event.checked, element)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="observaciones">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">OBSERVACIONES</th>
+        <td mat-cell *matCellDef="let element">
+          <ng-container *ngIf="isEditMode && (this.userobject.rol == 2 || this.userobject.rol == 3); else observacionesText">
+            <input [(ngModel)]="element.observation" class="border border-gray-400 rounded px-2 py-1 w-full">
+          </ng-container>
+          <ng-template #observacionesText>{{ element.observation }}</ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="notes">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">NOTAS</th>
+        <td mat-cell *matCellDef="let element">
+          <ng-container *ngIf="isEditMode && (this.userobject.rol == 2 || this.userobject.rol == 1); else notesText">
+            <input [(ngModel)]="element.notes" class="border border-gray-400 rounded px-2 py-1 w-full">
+          </ng-container>
+          <ng-template #notesText>{{ element.notes }}</ng-template>
+        </td>
+      </ng-container>
+
+      <!-- Repite para el resto: proyecto, prioridad, fechas, progreso, done, observaciones, etc -->
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</div>

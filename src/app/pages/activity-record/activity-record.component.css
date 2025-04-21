@@ -1,0 +1,38 @@
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline,
+  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline-start,
+  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline-end,
+  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline-gap {
+  border-color: black !important;
+  stroke: black !important;
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  border-color: black;
+}
+
+::ng-deep .mat-form-field-label {
+  color: black !important;
+}
+
+::ng-deep th.mat-header-cell, 
+::ng-deep td.mat-cell {
+  vertical-align: middle !important;
+  text-align: center !important;
+}
+::ng-deep td.mat-cell{
+  color: black;
+  background-color: white;
+}
+
+::ng-deep th.mat-header-cell,
+::ng-deep td.mat-cell {
+  border: 1px solid grey !important;
+}
+
+::ng-deep .mat-checkbox .mat-checkbox-frame {
+  border-color: black !important;
+}
+
+::ng-deep .mat-select-value {
+  color: black !important;
+}

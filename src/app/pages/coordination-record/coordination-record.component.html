@@ -1,0 +1,185 @@
+<div *ngIf="this.userobject.rol == 2 || this.userobject.rol == 1">
+  <app-header-activity></app-header-activity>
+</div>
+<div *ngIf="this.userobject.rol == 3">
+  <app-header-activity-others></app-header-activity-others>
+</div>
+<br>
+<mat-card class="w-4/5 mx-auto p-6 bg-white">
+  <form [formGroup]="coordinationform">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <mat-form-field appearance="outline" class="color=prima">
+        <mat-label>Nombre del Cliente o Proyecto</mat-label>
+        <input matInput formControlName="clientname" [(ngModel)]="coordinationobject.clientname">
+        <mat-error *ngIf="coordinationform.controls['clientname'].dirty && coordinationform.hasError('required') || coordinationform.controls['clientname'].invalid">Complete este campo es requerido!</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Detalle de actividad</mat-label>
+        <textarea matInput rows="4" formControlName="activity_detail" [(ngModel)]="coordinationobject.activity_detail"></textarea>
+        <mat-error *ngIf="coordinationform.controls['activity_detail'].dirty && coordinationform.hasError('required') || coordinationform.controls['activity_detail'].invalid">Complete este campo es requerido!</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Fecha de inicio</mat-label>
+        <input matInput type="datetime-local" formControlName="initial_date" [(ngModel)]="coordinationobject.initial_date">
+        <mat-error *ngIf="coordinationform.controls['initial_date'].dirty && coordinationform.hasError('required') || coordinationform.controls['initial_date'].invalid">Complete este campo es requerido!</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Fecha de llegada</mat-label>
+        <input matInput type="datetime-local" formControlName="arrival_date" [(ngModel)]="coordinationobject.arrival_date">
+        <mat-error *ngIf="coordinationform.controls['arrival_date'].dirty && coordinationform.hasError('required') || coordinationform.controls['arrival_date'].invalid">Complete este campo es requerido!</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Prioridad</mat-label>
+        <mat-select formControlName="priority" [(ngModel)]="coordinationobject.priority">
+            <mat-option *ngFor="let priority of prioritybox" [value]="priority">
+              {{ priority }}
+            </mat-option>
+        </mat-select>
+        <mat-error *ngIf="coordinationform.controls['priority'].dirty && coordinationform.hasError('required') || coordinationform.controls['priority'].invalid">Complete este campo es requerido!</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Orden de Trabajo</mat-label>
+        <mat-select formControlName="job_order" [(ngModel)]="coordinationobject.job_order">
+            <mat-option *ngFor="let job_order of orderbox" [value]="job_order">
+              {{ job_order }}
+            </mat-option>
+        </mat-select>
+        <mat-error *ngIf="coordinationform.controls['job_order'].dirty && coordinationform.hasError('required') || coordinationform.controls['job_order'].invalid">Complete este campo es requerido!</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="flex justify-end mt-6 space-x-4">
+      <button mat-raised-button class="bg-green-300 px-6 text-black" (click)="onReset()">Restablecer</button>
+      <button mat-raised-button class="bg-green-300 px-6 text-black" (click)="CreateCoordination()">Crear</button>
+    </div>
+  </form>
+</mat-card>
+
+<div class="p-6">
+  <div class="flex items-center justify-end mb-4">
+    <div class="flex gap-2 pb-5">
+      <button mat-raised-button class="bg-green-300 px-6 text-black rounded border border-black" (click)="isEditMode = true">EDITAR</button>
+      <button mat-raised-button class="bg-green-300 px-6 text-black rounded border border-black" (click)="saveChanges()">GUARDAR</button>
+    </div>
+  </div>
+
+  <!-- Tabla -->
+  <div class="overflow-auto shadow-md rounded border border-gray-300 max-h-[500px]">
+    <table mat-table [dataSource]="coordinationlist" class="min-w-full mat-elevation-z1">
+
+      <!-- Define columnas -->
+      <ng-container matColumnDef="pos">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">#</th>
+        <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="fecha_registro">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">FECHA DE REGISTRO</th>
+        <td mat-cell *matCellDef="let element">{{ element.register_date | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="cliente_proyecto">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">NOMBRE DEL CLIENTE O PROYECTO</th>
+        <td mat-cell *matCellDef="let element">{{ element.clientname }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="detalle_actividad">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">DETALLE DE ACTIVIDAD</th>
+        <td mat-cell *matCellDef="let element">{{ element.activity_detail }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="prioridad">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">PRIORIDAD</th>
+        <td mat-cell *matCellDef="let element">
+          <ng-container *ngIf="isEditMode; else priorityText">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-select [(ngModel)]="element.priority">
+                <mat-option *ngFor="let priority of prioritybox" [value]="priority">
+                  {{ priority }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-container>
+          <ng-template #priorityText>{{ element.priority }}</ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="orden_trabajo">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">ORDEN DE TRABAJO</th>
+        <td mat-cell *matCellDef="let element">
+          <ng-container *ngIf="isEditMode; else orderText">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-select [(ngModel)]="element.job_order">
+                <mat-option *ngFor="let job_order of orderbox" [value]="job_order">
+                  {{ job_order }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-container>
+          <ng-template #orderText>{{ element.job_order }}</ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="fecha_llegada">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">FECHA DE LLEGADA</th>
+        <td mat-cell *matCellDef="let element">{{ element.arrival_date | date: 'dd/MM/yyyy HH:mm:ss': 'UTC'}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="fecha_inicio">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">FECHA DE INICIO</th>
+        <td mat-cell *matCellDef="let element">{{ element.initial_date | date: 'dd/MM/yyyy HH:mm:ss': 'UTC'}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="fecha_finalizacion">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">FECHA DE FINALIZACION</th>
+        <td mat-cell *matCellDef="let element">{{ element.final_date | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="estado_actividad">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">ESTADO DE LA ACTIVIDAD</th>
+        <td mat-cell *matCellDef="let element">
+          <ng-container *ngIf="isEditMode; else stateText">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-select [(ngModel)]="element.state">
+                <mat-option *ngFor="let state of statebox" [value]="state">
+                  {{ state }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-container>
+          <ng-template #stateText>{{ element.state }}</ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="done">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">DONE</th>
+        <td mat-cell *matCellDef="let element">
+          <mat-checkbox
+          [checked]="element.done == 1"
+          (change)="onDoneChange($event.checked, element)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="observaciones">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">OBSERVACIONES</th>
+        <td mat-cell *matCellDef="let element">
+          <ng-container *ngIf="isEditMode; else observacionesText">
+            <input [(ngModel)]="element.observation" class="border border-gray-400 rounded px-2 py-1 w-full">
+          </ng-container>
+          <ng-template #observacionesText>{{ element.observation }}</ng-template>
+        </td>
+      </ng-container>
+
+      <!-- Repite para el resto: proyecto, prioridad, fechas, progreso, done, observaciones, etc -->
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+::ng-deep mat-form-field {
+    .mat-form-field-outline {
+      color: black !important;
+      border-color: black !important;
+    }
+  
+    .mat-form-field-outline-thick {
+      color: black !important;
+      border-color: black !important;
+    }
+  }
+
+  ::ng-deep .mat-form-field-label {
+    color: black !important;
+  }
+
+::ng-deep th.mat-header-cell, 
+::ng-deep td.mat-cell {
+  vertical-align: middle !important;
+  text-align: center !important;
+}
+
+::ng-deep th.mat-header-cell,
+::ng-deep td.mat-cell {
+  border: 1px solid grey !important;
+}
+
+::ng-deep td.mat-cell{
+  color: black;
+  background-color: white;
+}
+
+::ng-deep .mat-datepicker-toggle-default-icon {
+  color: black !important;
+  fill: black !important;
+}
+
+::ng-deep input.mat-input-element,
+::ng-deep textarea.mat-input-element{
+  color: black !important;
+}
+
+::ng-deep .mat-select-value {
+  color: black !important;
+}
+
+::ng-deep .mat-checkbox .mat-checkbox-frame {
+  border-color: black !important;
+}

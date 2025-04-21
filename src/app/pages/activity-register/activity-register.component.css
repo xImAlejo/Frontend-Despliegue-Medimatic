@@ -1,0 +1,38 @@
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+    border-color: black;
+  }
+  
+  ::ng-deep .mat-form-field-label {
+    color: black !important;
+  }
+  
+  ::ng-deep input.mat-input-element,
+  ::ng-deep textarea.mat-input-element,
+  ::ng-deep .mat-select-value {
+    color: black !important;
+  }
+  
+  ::ng-deep .mat-form-field-outline-thick {
+    border-color: black !important;
+  }
+
+  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline,
+  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline-start,
+  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline-end,
+  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline-gap {
+  border-color: black !important;
+  stroke: black !important;
+}
+
+.title{
+    background-color: #87CEEB;
+}
+
+.buttoncrear{
+    padding-left: 57.5%;
+}
+
+::ng-deep .mat-datepicker-toggle-default-icon {
+  color: black !important;
+  fill: black !important;
+}

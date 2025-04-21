@@ -1,0 +1,73 @@
+<div *ngIf="this.userobject.rol == 2 || this.userobject.rol == 1">
+  <app-header-activity></app-header-activity>
+</div>
+<div *ngIf="this.userobject.rol == 3">
+  <app-header-activity-others></app-header-activity-others>
+</div>
+<body class="p-6">
+  <mat-card class="w-4/5 mx-auto p-6 bg-white">
+    <mat-card-title class="text-center text-white title p-3 rounded mb-6 text-lg font-semibold">
+      ASIGNACIÓN DE ACTIVIDADES
+    </mat-card-title>
+  <form [formGroup]="activityform">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <mat-form-field appearance="outline" class="color=prima">
+        <mat-label>Tarea</mat-label>
+        <input matInput formControlName="task" [(ngModel)]="activityobject.task">
+        <mat-error *ngIf="activityform.controls['task'].dirty && activityform.hasError('required') || activityform.controls['task'].invalid">Complete este campo es requerido!</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Área o Proyecto</mat-label>
+        <input matInput formControlName="area" [(ngModel)]="activityobject.area">
+        <mat-error *ngIf="activityform.controls['area'].dirty && activityform.hasError('required') || activityform.controls['area'].invalid">Complete este campo es requerido!</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Fecha de Asignación</mat-label>
+        <input matInput type="datetime-local" formControlName="asignation_date" [(ngModel)]="activityobject.asignation_date">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Fecha Límite</mat-label>
+        <input matInput type="datetime-local" formControlName="limit_date" [(ngModel)]="activityobject.limit_date">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="md:col-span-2">
+        <mat-label>Detalle</mat-label>
+        <textarea matInput rows="4" formControlName="detail" [(ngModel)]="activityobject.detail"></textarea>
+        <mat-error *ngIf="activityform.controls['detail'].dirty && activityform.hasError('required') || activityform.controls['detail'].invalid">Complete este campo es requerido!</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Prioridad</mat-label>
+        <mat-select formControlName="priority" [(ngModel)]="activityobject.priority">
+            <mat-option *ngFor="let priority of prioritybox" [value]="priority">
+              {{ priority }}
+            </mat-option>
+        </mat-select>
+        <mat-error *ngIf="activityform.controls['priority'].dirty && activityform.hasError('required') || activityform.controls['priority'].invalid">Complete este campo es requerido!</mat-error>
+      </mat-form-field>
+    </div>
+  </form>
+
+    <div class="flex justify-end mt-6">
+      <button mat-raised-button class="bg-green-300 px-6 text-black" (click)="onReset()">Restablecer</button>
+    </div>
+    </mat-card>
+ 
+
+  <div class="flex items-center gap-4 w-4/5 mx-auto mt-6">
+    <mat-form-field appearance="outline" class="w-full max-w-sm pl-10">
+      <mat-label>Asignar a:</mat-label>
+      <mat-select [(ngModel)]="activityobject.user">
+        <mat-option *ngFor="let user of userlist" [value]="user.id">
+          {{ user.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div class="pb-5 buttoncrear">
+      <button mat-raised-button class="bg-green-300 px-6 text-black" (click)="CreateActivity()">Crear</button>
+    </div>
+  </div>
+</body>

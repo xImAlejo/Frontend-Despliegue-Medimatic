@@ -1,0 +1,40 @@
+<app-header-login></app-header-login>
+<div>
+    <div class="pt-40"></div>
+    <mat-card class="w-1/4 ml-auto mr-auto bg-white text-black">
+      <img src="assets/images/medimatic-logo.png" class="h-48 ml-auto mr-auto">
+      <div class="pt-10"></div>
+        <mat-card-title>Bienvenido!</mat-card-title>
+        <mat-card-content>
+            <form class="text-left" [formGroup]="loginform">
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Nombre de usuario</mat-label>
+                  <input matInput formControlName="username" placeholder="Ingrese su nombre de usuario" required [(ngModel)]="loginobject.username">
+                  <mat-error *ngIf="loginform.controls['username'].dirty && loginform.hasError('required') || loginform.controls['username'].invalid">Complete este campo es requerido!</mat-error>
+                </mat-form-field>
+                <br>
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Contraseña</mat-label>
+                  <input matInput formControlName="password" placeholder="Ingrese contraseña" [type]="hide ? 'password' : 'text'" required [(ngModel)]="loginobject.password">
+                  <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                    <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                  </button>
+                  <mat-error *ngIf="loginform.controls['password'].dirty && loginform.hasError('required') || loginform.controls['password'].invalid">Complete este campo es requerido!</mat-error>
+                </mat-form-field>
+    
+                <!--<p class="text-black text-right">¿Olvidaste tu contraseña? <a href="/recover-password" class="text-blue-600">Click Aquí</a></p>
+                <br>-->
+                <div class="text-center">
+                  <button mat-raised-button class = "w-full bg-green-300 text-black" (click)="Login()" [disabled]="loginform.invalid">Ingresar</button>
+                </div>
+                <!--<br>
+                <p class="text-black text-center">¿Si no tienes una cuenta? 
+                    <a class="text-blue-600" routerLink="/register-option">Regístrate aquí</a>
+                </p>-->
+            </form>
+        </mat-card-content>
+    </mat-card>
+    <div class="pb-20"></div>
+    <div class="pb-20"></div>
+    <div class="pb-10"></div>
+</div>
