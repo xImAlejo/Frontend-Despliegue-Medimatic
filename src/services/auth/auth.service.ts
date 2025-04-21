@@ -11,7 +11,8 @@ import { tap } from 'rxjs/operators';
 })
 export class AuthService {
 
-  basePath = 'http://localhost:8000/';
+  //basePath = 'http://localhost:8000/';
+  basePath = 'https://medimatic-services.onrender.com/';
 
   httpOptions = {
     headers: new HttpHeaders({

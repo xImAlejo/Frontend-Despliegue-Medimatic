@@ -8,7 +8,8 @@ import { catchError, Observable, retry, throwError } from 'rxjs';
 })
 export class ActivityService {
 
-  basePath = 'http://localhost:8000/activity/ActivityViewSets/';
+  //basePath = 'http://localhost:8000/activity/ActivityViewSets/';
+  basePath = 'https://medimatic-services.onrender.com/activity/ActivityViewSets/';
 
   httpOptions = {
     headers: new HttpHeaders({

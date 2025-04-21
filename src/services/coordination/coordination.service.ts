@@ -8,7 +8,8 @@ import { catchError, Observable, retry, throwError } from 'rxjs';
 })
 export class CoordinationService {
 
-  basePath = 'http://localhost:8000/coordination/CoordinationViewSets/';
+  //basePath = 'http://localhost:8000/coordination/CoordinationViewSets/';
+  basePath = 'https://medimatic-services.onrender.com/coordination/CoordinationViewSets/';
 
   httpOptions = {
     headers: new HttpHeaders({
