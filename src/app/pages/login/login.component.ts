@@ -44,7 +44,7 @@ export class LoginComponent implements OnInit {
           this.Router.navigate(['activity','record',this.TokenService.getId()])
         }
     },err=>{
-        console.log("No se pudo ingresar")
+        alert("usuario o contraseña incorrecta")
         console.log(err)
     })
   }

@@ -61,9 +61,11 @@
     <mat-form-field appearance="outline" class="w-full max-w-sm pl-10">
       <mat-label>Asignar a:</mat-label>
       <mat-select [(ngModel)]="activityobject.user">
-        <mat-option *ngFor="let user of userlist" [value]="user.id">
-          {{ user.name }}
-        </mat-option>
+        <ng-container *ngFor="let user of userlist">
+          <mat-option *ngIf="user.rol != 2" [value]="user.id">
+            {{ user.name }}
+          </mat-option>
+        </ng-container>
       </mat-select>
     </mat-form-field>
     <div class="pb-5 buttoncrear">

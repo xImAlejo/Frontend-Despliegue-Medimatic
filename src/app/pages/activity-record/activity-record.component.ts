@@ -48,21 +48,34 @@ export class ActivityRecordComponent implements OnInit {
     this.userService.getbyId(this.userid).subscribe((response:any) =>{
       console.log(response)
       this.userobject = response
+      this.GetActivities(this.userobject)
     })
     this.GetUsers()
-    this.GetActivities()
+   
   }
 
 
-  GetActivities(){
-    this.activityService.getAll().subscribe((response:any) =>{
-      console.log(response.rows)
-      this.activitylist = response.rows
-      for (let activity of this.activitylist) {
-        activity.asignation_date = new Date(activity.asignation_date);
-        activity.limit_date = new Date(activity.limit_date);
-      }
-    })
+  GetActivities(user:User){
+    console.log(this.userobject.rol)
+    if(this.userobject.rol == 1 || this.userobject.rol == 2){
+      this.activityService.getAll().subscribe((response:any) =>{
+        console.log(response.rows)
+        this.activitylist = response.rows
+        for (let activity of this.activitylist) {
+          activity.asignation_date = new Date(activity.asignation_date);
+          activity.limit_date = new Date(activity.limit_date);
+        }
+      })
+    }else{
+      this.activityService.getbyUserId(this.userobject.id).subscribe((response:any) =>{
+        console.log(response.rows)
+        this.activitylist = response.rows
+        for (let activity of this.activitylist) {
+          activity.asignation_date = new Date(activity.asignation_date);
+          activity.limit_date = new Date(activity.limit_date);
+        }
+      })
+    }
   }
 
   onDoneChange(checked: boolean, activityparam: any) {
