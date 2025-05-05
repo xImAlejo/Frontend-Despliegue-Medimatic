@@ -8,8 +8,8 @@ import { catchError, Observable, retry, throwError } from 'rxjs';
 })
 export class EntryService {
  
-    basePath = 'http://localhost:8000/entry/EntryViewSets/';
-  //basePath = 'https://medimatic-services-zzy7.onrender.com/entry/EntryViewSets/';
+  //basePath = 'http://localhost:8000/entry/EntryViewSets/';
+  basePath = 'https://medimatic-services-zzy7.onrender.com/entry/EntryViewSets/';
 
   httpOptions = {
     headers: new HttpHeaders({

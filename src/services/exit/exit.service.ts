@@ -8,8 +8,8 @@ import { catchError, Observable, retry, throwError } from 'rxjs';
 })
 export class ExitService {
 
-  basePath = 'http://localhost:8000/exit/ExitViewSets/';
-  //basePath = 'https://medimatic-services-zzy7.onrender.com/exit/ExitViewSets/';
+  //basePath = 'http://localhost:8000/exit/ExitViewSets/';
+  basePath = 'https://medimatic-services-zzy7.onrender.com/exit/ExitViewSets/';
 
   httpOptions = {
     headers: new HttpHeaders({
