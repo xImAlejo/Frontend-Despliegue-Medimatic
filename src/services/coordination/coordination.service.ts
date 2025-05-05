@@ -8,8 +8,8 @@ import { catchError, Observable, retry, throwError } from 'rxjs';
 })
 export class CoordinationService {
 
-  //basePath = 'http://localhost:8000/coordination/CoordinationViewSets/';
-  basePath = 'https://medimatic-services.onrender.com/coordination/CoordinationViewSets/';
+  basePath = 'http://localhost:8000/coordination/CoordinationViewSets/';
+  //basePath = 'https://medimatic-services-zzy7.onrender.com/coordination/CoordinationViewSets/';
 
   httpOptions = {
     headers: new HttpHeaders({
@@ -55,7 +55,7 @@ export class CoordinationService {
   }
   
   delete(id: any){
-    return this.http.delete(`${this.basePath}${id}`, this.httpOptions)
+    return this.http.delete(`${this.basePath}${id}/`, this.httpOptions)
       .pipe(
         retry(2),
         catchError(this.handleError));

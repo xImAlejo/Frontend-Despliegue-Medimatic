@@ -43,6 +43,10 @@ export class LoginComponent implements OnInit {
           console.log("Es biomedico")
           this.Router.navigate(['activity','record',this.TokenService.getId()])
         }
+        if(this.TokenService.isAccountant()){
+          console.log("Es contador")
+          this.Router.navigate(['activity','record',this.TokenService.getId()])
+        }
     },err=>{
         alert("usuario o contraseña incorrecta")
         console.log(err)

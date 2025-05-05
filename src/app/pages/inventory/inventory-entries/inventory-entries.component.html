@@ -1,0 +1,201 @@
+<app-header-app></app-header-app>
+<div class="p-6" style="background-image: url('assets/images/fondo.jpg'); background-size: cover; background-repeat: no-repeat; background-position: center; min-height: 100vh;">
+  <div class="flex items-center justify-between mb-4">
+    <mat-card class="p-6 custom-card-bg">
+    <div class="flex items-center gap-2 pt-4">
+      <div class="pb-5">
+        <label class="font-semibold text-black">FECHA:</label>
+      </div>
+      <mat-form-field appearance="outline">
+        <input matInput [matDatepicker]="picker1" [(ngModel)]="productobject.date">
+        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+      </mat-form-field>
+      <div class="pb-5">
+        <button mat-raised-button class="bg-green-300 px-6 text-black rounded border border-black" (click)="deployproductsbyDate(productobject.date)">VER</button>
+      </div>
+      <div class="pb-5">
+        <label class="font-semibold text-black">CÓDIGO:</label>
+      </div>
+      <mat-form-field appearance="outline">
+        <mat-select [(ngModel)]="productobject.id">
+          <ng-container *ngFor="let product of productlist">
+            <mat-option [value]="product.id">
+              M0000{{ product.id }}
+            </mat-option>
+          </ng-container>
+        </mat-select>
+      </mat-form-field>
+      <div class="pb-5">
+        <button mat-raised-button class="bg-green-300 px-6 text-black rounded border border-black" (click)="deployproductsbyProductId(productobject.id)">VER</button>
+      </div>
+    </div>
+  </mat-card>
+
+    <div class="flex gap-2 pb-5">
+      <button mat-raised-button class="bg-green-300 px-6 text-black rounded border border-black" (click)="exportToExcel()">EXPORTAR</button>
+      <button mat-raised-button class="bg-green-300 px-6 text-black rounded border border-black" (click)="isEditMode = true">EDITAR</button>
+      <button mat-raised-button class="bg-green-300 px-6 text-black rounded border border-black" (click)="saveChanges()">GUARDAR</button>
+      <button mat-raised-button class="bg-green-300 px-6 text-black rounded border border-black" (click)="GoToRegisterProducts()">REGISTRAR PRODUCTO</button>
+    </div>
+  </div>
+
+  <!-- Tabla -->
+  <div class="overflow-auto shadow-md rounded border border-gray-300 max-h-[500px] max-w-[5000px]">
+    <table mat-table [dataSource]="enteredProducts" class="min-w-full mat-elevation-z1">
+
+      <!-- Define columnas -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">CÓDIGO</th>
+        <td mat-cell *matCellDef="let element">M0000{{ element.id }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">TIPO</th>
+        <td mat-cell *matCellDef="let element">{{ element.type }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="imported">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">IMPORTADOS</th>
+        <td mat-cell *matCellDef="let element">{{ element.imported }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="minsa_code">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">COD MINSA</th>
+        <td mat-cell *matCellDef="let element">{{ element.minsa_code }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="minsa_description">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">DESCRIPCION MINSA</th>
+        <td mat-cell *matCellDef="let element">{{ element.minsa_description }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">DESCRIPCION</th>
+        <td mat-cell *matCellDef="let element">{{ element.description }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="brand">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">MARCA</th>
+        <td mat-cell *matCellDef="let element">{{ element.brand }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="model">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">MODELO</th>
+        <td mat-cell *matCellDef="let element">{{ element.model }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="origin">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">PROCEDENCIA</th>
+        <td mat-cell *matCellDef="let element">{{ element.origin }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="serie">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">SERIE/LOTE</th>
+        <td mat-cell *matCellDef="let element">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-select [(ngModel)]="element.selected_serie" (selectionChange)="onSerieChange()">
+              <mat-option *ngFor="let serie of element.series" [value]="serie">
+                {{ serie.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="date_manufacture">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">AÑO DE FABRICACION</th>
+        <td mat-cell *matCellDef="let element">{{ element.date_manufacture | date: 'dd/MM/yyyy'}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="supplier">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">PROVEEDOR</th>
+        <td mat-cell *matCellDef="let element">{{ element.supplier }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="entry_point">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">SEDE DE INGRESO</th>
+        <td mat-cell *matCellDef="let element">{{ element.entry_point}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="quantity">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">CANTIDAD</th>
+        <td mat-cell *matCellDef="let element">
+          <ng-container *ngIf="isEditMode; else quantityenterText">
+            <input [(ngModel)]="element.selected_serie.quantity" class="border border-gray-400 rounded px-2 py-1 w-full">
+          </ng-container>
+          <ng-template #quantityenterText>
+            {{ getSelectedSerie(element)?.quantity || null }}
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">FECHA</th>
+        <td mat-cell *matCellDef="let element">{{ element.date | date: 'dd/MM/yyyy'}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="entry_guide">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">GUIA INGRESO</th>
+        <td mat-cell *matCellDef="let element">{{ element.entry_guide}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="proyect">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">PROYECTO</th>
+        <td mat-cell *matCellDef="let element">{{ element.proyect}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="responsible">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">RESPONSABLE</th>
+        <td mat-cell *matCellDef="let element">{{ element.responsible}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="coin_bill">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">MONEDA DE LA FACTURA</th>
+        <td mat-cell *matCellDef="let element">{{ element.coin_bill}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="unit_price">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">PRECIO UNITARIO EN MONEDA FACTURA</th>
+        <td mat-cell *matCellDef="let element">{{ element.unit_price}}</td>
+      </ng-container>
+      <!-- Aqui agregarle una columna en el backend o tal vez lo pueda realizar sin eso-->
+      <ng-container matColumnDef="total_amount">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">CANTIDAD X PRECIO UNIT</th>
+        <td mat-cell *matCellDef="let element">{{ element.total_amount}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="type_change">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">TIPO DE CAMBIO SUNAT DE LA MONEDA</th>
+        <td mat-cell *matCellDef="let element">{{ element.type_change}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="final_amount">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">PRECIO TOTAL EN SOLES</th>
+        <td mat-cell *matCellDef="let element">{{ element.final_amount}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="bill_text">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">FACTURA</th>
+        <td mat-cell *matCellDef="let element">{{ element.bill_text}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="date_bill">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">FECHA DE FACTURA</th>
+        <td mat-cell *matCellDef="let element">{{ element.date_bill | date: 'dd/MM/yyyy'}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="edit_serie">
+        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white"></th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-raised-button class="bg-green-300 px-6 text-black rounded border border-black" (click)="OpenEditSerie(element.id)">AGREGAR SERIE</button> 
+        </td>
+      </ng-container>
+
+      <!-- Repite para el resto: proyecto, prioridad, fechas, progreso, done, observaciones, etc -->
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</div>

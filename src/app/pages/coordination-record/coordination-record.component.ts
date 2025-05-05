@@ -21,7 +21,7 @@ export class CoordinationRecordComponent implements OnInit {
   displayedColumns: string[] = ['pos', 'fecha_registro', 'cliente_proyecto', 'detalle_actividad', 
                                 'prioridad', 'orden_trabajo', 'fecha_llegada',
                                 'fecha_inicio', 'fecha_finalizacion', 'estado_actividad', 
-                                'done', 'observaciones']; 
+                                'done', 'observaciones','delete']; 
   dataSource = [
   { pos: 1, fecha_registro: 'Fecha de registro 1', cliente_proyecto: 'cliente proyecto 1', detalle_actividad: 'detalle actividad 1', 
     prioridad: 'Alta', orden_trabajo: 'orden trabajo 1', fecha_llegada: 'fecha llegada 1',
@@ -98,6 +98,7 @@ export class CoordinationRecordComponent implements OnInit {
         coordination.initial_date = new Date(coordination.initial_date);
         coordination.arrival_date = new Date(coordination.arrival_date);
       }
+      this.coordinationlist.sort((a, b) => b.id - a.id);
     })
   
   }
@@ -123,6 +124,17 @@ export class CoordinationRecordComponent implements OnInit {
 
   saveChanges(){
     for (let coordination of this.coordinationlist) {
+      if (coordination.initial_date) {
+        const date = new Date(coordination.initial_date);
+        // Corregimos desfase horario: restamos el offset
+        coordination.initial_date = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+      }
+  
+      if (coordination.arrival_date) {
+        const date = new Date(coordination.arrival_date);
+        coordination.arrival_date = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+      }
+
       this.coordinationService.update(coordination.id, coordination).subscribe((response:any) =>{
         console.log(response)
         console.log("Actualizado")
@@ -132,6 +144,13 @@ export class CoordinationRecordComponent implements OnInit {
     }
   
     this.isEditMode = false;
+  }
+
+  deleteCoordination(id:any){
+    this.coordinationService.delete(id).subscribe((responseuser:any) =>{
+      console.log("Eliminado")
+      this.GetCoordinations();
+    })
   }
 
 

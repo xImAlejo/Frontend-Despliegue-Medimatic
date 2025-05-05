@@ -1,0 +1,235 @@
+<app-header-app></app-header-app>
+<div class="p-6" style="background-image: url('assets/images/fondo.jpg'); background-size: cover; background-repeat: no-repeat; background-position: center; min-height: 100vh;">
+<mat-card class="w-4/5 mx-auto p-6 bg-white">
+  <mat-card-title class="text-center title p-3 rounded mb-6 text-lg font-semibold">
+    ASIGNACIÓN DE ENTRADAS
+  </mat-card-title>
+  <form [formGroup]="registerentriesform">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex items-center gap-2">
+        <div class="pb-5 w-48 text-black">
+          <label class="font-semibold">TIPO:</label>
+        </div>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput formControlName="type" [(ngModel)]="productobject.type">
+          <mat-error *ngIf="registerentriesform.controls['type'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['type'].invalid">Complete este campo es requerido!</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="pb-5 w-48 text-black">
+          <label class="font-semibold">IMPORTADOS:</label>
+        </div>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput formControlName="imported" [(ngModel)]="productobject.imported">
+          <mat-error *ngIf="registerentriesform.controls['imported'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['imported'].invalid">Complete este campo es requerido!</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="pb-5 w-48 text-black">
+          <label class="font-semibold">DESCRIPCION:</label>
+        </div>
+        <mat-form-field appearance="outline" class="w-full">
+          <textarea matInput rows="4" formControlName="description" [(ngModel)]="productobject.description"></textarea>
+          <mat-error *ngIf="registerentriesform.controls['description'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['description'].invalid">Complete este campo es requerido!</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="pb-5 w-48 text-black">
+          <label class="font-semibold">MARCA:</label>
+        </div>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput formControlName="brand" [(ngModel)]="productobject.brand">
+          <mat-error *ngIf="registerentriesform.controls['brand'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['brand'].invalid">Complete este campo es requerido!</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="pb-5 w-48 text-black">
+          <label class="font-semibold">PRECIO UNITARIO:</label>
+        </div>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput type="number" step="any" formControlName="unit_price" [(ngModel)]="productobject.unit_price">
+          <mat-error *ngIf="registerentriesform.controls['unit_price'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['unit_price'].invalid">Complete este campo es requerido!</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="pb-5 w-48 text-black">
+          <label class="font-semibold">TIPO DE CAMBIO:</label>
+        </div>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput type="number" step="any" formControlName="type_change" [(ngModel)]="productobject.type_change">
+          <mat-error *ngIf="registerentriesform.controls['type_change'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['type_change'].invalid">Complete este campo es requerido!</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="pb-5 w-48 text-black">
+          <label class="font-semibold">FACTURA:</label>
+        </div>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput formControlName="bill_text" [(ngModel)]="productobject.bill_text">
+          <mat-error *ngIf="registerentriesform.controls['bill_text'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['bill_text'].invalid">Complete este campo es requerido!</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="pb-5 w-48 text-black">
+          <label class="font-semibold">FECHA DE FACTURA:</label>
+        </div>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput [matDatepicker]="picker1" formControlName="date_bill" [(ngModel)]="productobject.date_bill">
+          <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+          <mat-datepicker #picker1></mat-datepicker>
+          <mat-error *ngIf="registerentriesform.controls['date_bill'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['date_bill'].invalid">Complete este campo es requerido!</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="pb-5 w-48 text-black">
+          <label class="font-semibold">MODELO:</label>
+        </div>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput formControlName="model" [(ngModel)]="productobject.model">
+          <mat-error *ngIf="registerentriesform.controls['model'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['model'].invalid">Complete este campo es requerido!</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="pb-5 w-48 text-black">
+          <label class="font-semibold">PROCEDENCIA:</label>
+        </div>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput formControlName="origin" [(ngModel)]="productobject.origin">
+          <mat-error *ngIf="registerentriesform.controls['origin'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['origin'].invalid">Complete este campo es requerido!</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="pb-5 w-48 text-black">
+          <label class="font-semibold">SERIE/LOTE:</label>
+        </div>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput formControlName="series_input" [(ngModel)]="productobject.series_input">
+          <mat-error *ngIf="registerentriesform.controls['series_input'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['series_input'].invalid">Complete este campo es requerido!</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="pb-5 w-48 text-black">
+          <label class="font-semibold">AÑO FABRICADO:</label>
+        </div>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput [matDatepicker]="picker2" formControlName="date_manufacture" [(ngModel)]="productobject.date_manufacture">
+          <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
+          <mat-error *ngIf="registerentriesform.controls['date_manufacture'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['date_manufacture'].invalid">Complete este campo es requerido!</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="pb-5 w-48 text-black">
+          <label class="font-semibold">COD MINSA:</label>
+        </div>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput formControlName="minsa_code" [(ngModel)]="productobject.minsa_code">
+          <mat-error *ngIf="registerentriesform.controls['minsa_code'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['minsa_code'].invalid">Complete este campo es requerido!</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="pb-5 w-48 text-black">
+          <label class="font-semibold">DESCRIPCION MINSA:</label>
+        </div>
+        <mat-form-field appearance="outline" class="w-full">
+          <textarea matInput rows="4" formControlName="minsa_description" [(ngModel)]="productobject.minsa_description"></textarea>
+          <mat-error *ngIf="registerentriesform.controls['minsa_description'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['minsa_description'].invalid">Complete este campo es requerido!</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="pb-5 w-48 text-black">
+          <label class="font-semibold">PROVEEDOR:</label>
+        </div>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput formControlName="supplier" [(ngModel)]="productobject.supplier">
+          <mat-error *ngIf="registerentriesform.controls['supplier'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['supplier'].invalid">Complete este campo es requerido!</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="pb-5 w-48 text-black">
+          <label class="font-semibold">SEDE DE INGRESO:</label>
+        </div>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput formControlName="entry_point" [(ngModel)]="productobject.entry_point">
+          <mat-error *ngIf="registerentriesform.controls['entry_point'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['entry_point'].invalid">Complete este campo es requerido!</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="pb-5 w-48 text-black">
+          <label class="font-semibold">FECHA:</label>
+        </div>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput [matDatepicker]="picker3" formControlName="date" [(ngModel)]="productobject.date">
+          <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+          <mat-datepicker #picker3></mat-datepicker>
+          <mat-error *ngIf="registerentriesform.controls['date'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['date'].invalid">Complete este campo es requerido!</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="pb-5 w-48 text-black">
+          <label class="font-semibold">GUIA INGRESO:</label>
+        </div>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput formControlName="entry_guide" [(ngModel)]="productobject.entry_guide">
+          <mat-error *ngIf="registerentriesform.controls['entry_guide'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['entry_guide'].invalid">Complete este campo es requerido!</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="pb-5 w-48 text-black">
+          <label class="font-semibold">PROYECTO:</label>
+        </div>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput formControlName="proyect" [(ngModel)]="productobject.proyect">
+          <mat-error *ngIf="registerentriesform.controls['proyect'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['proyect'].invalid">Complete este campo es requerido!</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="pb-5 w-48 text-black">
+          <label class="font-semibold">MONEDA DE LA FACTURA:</label>
+        </div>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-select formControlName="coin_bill" [(ngModel)]="productobject.coin_bill">
+            <ng-container *ngFor="let coin of coinlist">
+              <mat-option [value]="coin">
+                {{ coin }}
+              </mat-option>
+            </ng-container>
+          </mat-select>
+          <mat-error *ngIf="registerentriesform.controls['coin_bill'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['coin_bill'].invalid">Complete este campo es requerido!</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="flex justify-end mt-6 space-x-4">
+      <button mat-raised-button class="bg-green-300 px-6 text-black" (click)="onReset()">Restablecer</button>
+      <button mat-raised-button class="bg-green-300 px-6 text-black" (click)="CreateEntries()">Agregar</button>
+    </div>
+  </form>
+</mat-card>
+<div class="p-6">
+  <div class="flex items-center justify-end mb-4">
+    <div class="flex gap-2 pb-5">
+      <button mat-raised-button class="bg-green-300 px-6 text-black rounded border border-black" (click)="GoToEntries()">Mostrar Entradas</button>
+    </div>
+  </div>
+</div>
+</div>

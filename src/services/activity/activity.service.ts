@@ -8,8 +8,8 @@ import { catchError, Observable, retry, throwError } from 'rxjs';
 })
 export class ActivityService {
 
-  //basePath = 'http://localhost:8000/activity/ActivityViewSets/';
-  basePath = 'https://medimatic-services.onrender.com/activity/ActivityViewSets/';
+  basePath = 'http://localhost:8000/activity/ActivityViewSets/';
+  //basePath = 'https://medimatic-services-zzy7.onrender.com/activity/ActivityViewSets/';
 
   httpOptions = {
     headers: new HttpHeaders({
@@ -62,7 +62,7 @@ export class ActivityService {
   }
   
   delete(id: any){
-    return this.http.delete(`${this.basePath}${id}`, this.httpOptions)
+    return this.http.delete(`${this.basePath}${id}/`, this.httpOptions)
       .pipe(
         retry(2),
         catchError(this.handleError));

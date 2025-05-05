@@ -48,6 +48,7 @@ export class ActivityRegisterComponent implements OnInit {
       limit_date:[''],
       detail:['',Validators.required],
       priority:['',Validators.required],
+      user:['',Validators.required],
      })
 
   }

@@ -26,6 +26,7 @@
 
 .title{
     background-color: #87CEEB;
+    color: white;
 }
 
 .buttoncrear{
@@ -35,4 +36,7 @@
 ::ng-deep .mat-datepicker-toggle-default-icon {
   color: black !important;
   fill: black !important;
+}
+.activitiesfields{
+  width: 1000px;
 }

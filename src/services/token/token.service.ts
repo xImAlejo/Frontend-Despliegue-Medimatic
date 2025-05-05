@@ -119,4 +119,24 @@ export class TokenService {
 
     return true; 
   }
+
+  public isAccountant(){
+  
+    if (!this.isLogged()) {
+     
+      return false;
+    }
+
+    const token = this.getToken()!;
+    const payload = token.split('.')[1];
+    const payloadDecoded = atob(payload);
+    const values = JSON.parse(payloadDecoded);
+    const roles = values.rol;
+
+    if (roles!= 4) {
+      return false;
+    }
+
+    return true; 
+  }
 }

@@ -1,0 +1,16 @@
+::ng-deep .mat-dialog-container {
+    background-color: white !important;
+    color: black;
+}
+  
+::ng-deep .mat-dialog-title {
+  color: black !important;
+}
+
+::ng-deep .mat-form-field {
+  color: black;
+}
+::ng-deep button[disabled] {
+  background-color: #d3d3d3 !important;
+  color: black !important; 
+}

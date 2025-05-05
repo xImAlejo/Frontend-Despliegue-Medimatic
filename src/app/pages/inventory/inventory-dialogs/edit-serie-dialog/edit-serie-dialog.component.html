@@ -1,0 +1,13 @@
+<h1 mat-dialog-title class="text-center">Agregar Serie!</h1>
+<div mat-dialog-content>
+  <form [formGroup]="serieform">
+    <mat-form-field appearance="outline">
+      <mat-label>Serie/Lote</mat-label>
+      <input matInput formControlName="series_input" [(ngModel)]="productserie.name">
+      <mat-error *ngIf="serieform.controls['series_input'].dirty && serieform.hasError('required') || serieform.controls['series_input'].invalid">Complete este campo es requerido!</mat-error>
+    </mat-form-field>
+  </form>
+</div>
+<div class="text-center">
+  <button [matDialogClose] class="bg-green-300 px-6 text-black rounded border border-black" mat-raised-button [disabled]="serieform.invalid" (click)="AddSeries(productserie.name)">Guardar</button>
+</div>
