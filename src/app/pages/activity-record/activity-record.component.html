@@ -159,7 +159,7 @@
       <ng-container matColumnDef="observaciones">
         <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">OBSERVACIONES</th>
         <td mat-cell *matCellDef="let element">
-          <ng-container *ngIf="isEditMode && (this.userobject.rol == 2 || this.userobject.rol == 3); else observacionesText">
+          <ng-container *ngIf="isEditMode && this.userobject.rol != 1; else observacionesText">
             <input [(ngModel)]="element.observation" class="border border-gray-400 rounded px-2 py-1 w-[300px]">
           </ng-container>
           <ng-template #observacionesText>{{ element.observation }}</ng-template>
