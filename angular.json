@@ -21,7 +21,11 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/static"
+              {
+                "glob": "_redirects",
+                "input": "src/static",
+                "output": "."
+              }
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
