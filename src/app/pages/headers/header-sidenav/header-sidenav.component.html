@@ -1,0 +1,35 @@
+
+<body class="sidenav-container">
+  <!--Registro de Actividades-->
+  <!--<ng-container *ngIf="this.userobject.rol == 2 || this.userobject.rol == 1">
+  <a (click)="GoToRegister()" style="cursor: pointer;" class="flex items-center gap-2 cursor-pointer" [ngClass]="{ 'nav-link': true, 'active-link': currentUrl.includes('/activity/register') }">
+    <mat-icon>book</mat-icon> Registro
+  </a>
+  </ng-container>
+  <a (click)="GoToActivities()" style="cursor: pointer;" class="flex items-center gap-2 cursor-pointer" [ngClass]="{ 'nav-link': true, 'active-link': currentUrl.includes('/activity/record') }">
+    <mat-icon>list_alt</mat-icon> Actividades
+  </a>
+  <ng-container *ngIf="this.userobject.rol == 2 || this.userobject.rol == 1">
+    <a (click)="GoToCoordination()" style="cursor: pointer;" class="flex items-center gap-2 cursor-pointer" [ngClass]="{ 'nav-link': true, 'active-link': currentUrl.includes('/coordination/record') }">
+      <mat-icon>group</mat-icon> Coordinación
+    </a>
+  </ng-container>-->
+  
+  <!--Inventario-->
+  <ng-container *ngIf="this.userobject.rol == 2 || this.userobject.rol == 4">
+    <a (click)="GoToEntries()" style="cursor: pointer;" class="flex items-center gap-2 cursor-pointer" [ngClass]="{ 'nav-link': true, 'active-link': isActive(['/inventory/register/entries', '/inventory/entries']) }">
+      <mat-icon>add_shopping_cart</mat-icon> Entradas
+    </a>
+    <a (click)="GoToExits()" style="cursor: pointer;" class="flex items-center gap-2 cursor-pointer" [ngClass]="{ 'nav-link': true, 'active-link': currentUrl.includes('/inventory/exits') }">
+      <mat-icon>shopping_cart_checkout</mat-icon> Salidas
+    </a>
+    <a (click)="GoToStock()" style="cursor: pointer;" class="flex items-center gap-2 cursor-pointer" [ngClass]="{ 'nav-link': true, 'active-link': currentUrl.includes('/inventory/stock') }">
+      <mat-icon>inventory_2</mat-icon> Inventario
+    </a>
+  </ng-container>
+
+  <!--Salida-->  
+  <a (click)="GoToLogin()" style="cursor: pointer;" class="flex items-center gap-2 cursor-pointer" [ngClass]="{ 'nav-link': true}">
+    <mat-icon>exit_to_app</mat-icon> Salir
+  </a>  
+</body>

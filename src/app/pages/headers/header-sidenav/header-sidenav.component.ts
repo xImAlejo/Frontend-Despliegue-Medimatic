@@ -1,22 +1,21 @@
-import { Component, Output, OnInit, EventEmitter } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 import { TokenService } from 'src/services/token/token.service';
-import { UserService } from 'src/services/user/user.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { User } from 'src/app/models/user';
+import { UserService } from 'src/services/user/user.service';
 
 @Component({
-  selector: 'app-header-app',
-  templateUrl: './header-app.component.html',
-  styleUrls: ['./header-app.component.css']
+  selector: 'app-header-sidenav',
+  templateUrl: './header-sidenav.component.html',
+  styleUrls: ['./header-sidenav.component.css']
 })
-export class HeaderAppComponent implements OnInit {
-  @Output() toggleSidebar = new EventEmitter<boolean>();
-  userid!:number
-  userobject!:User
+export class HeaderSidenavComponent implements OnInit {
+  
   currentUrl:string = '';
-  opened:boolean = false;
+  userobject!:User
+  userid!:number
 
-  constructor(private cd:Router, private TokenService:TokenService, private route:ActivatedRoute, private userService:UserService) { 
+  constructor(private cd:Router,  private TokenService:TokenService, private route:ActivatedRoute, private userService:UserService) { 
     this.userobject = {} as User
   }
 
@@ -33,14 +32,14 @@ export class HeaderAppComponent implements OnInit {
     this.cd.events.subscribe(() => {
       this.currentUrl = this.cd.url;
     });
+
   }
 
-
-  GoToRegister(){
+   GoToRegister(){
     this.cd.navigate(['activity','register',this.TokenService.getId()])
   }
 
-  GoToActivities(){
+   GoToActivities(){
     this.cd.navigate(['activity','record',this.TokenService.getId()])
   }
 
@@ -66,11 +65,6 @@ export class HeaderAppComponent implements OnInit {
 
   isActive(paths: string[]): boolean {
     return paths.some(path => this.currentUrl.includes(path));
-  }
-
-  toggleNav() {
-    this.opened = !this.opened;
-    this.toggleSidebar.emit(this.opened);  // Emite el nuevo estado
   }
 
 }

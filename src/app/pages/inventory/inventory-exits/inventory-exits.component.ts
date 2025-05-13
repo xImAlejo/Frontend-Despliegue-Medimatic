@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, Input, OnInit, NgZone } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Product } from 'src/app/models/product';
 import { ProductService } from 'src/services/product/product.service';
@@ -17,7 +17,7 @@ import * as FileSaver from 'file-saver';
   styleUrls: ['./inventory-exits.component.css']
 })
 export class InventoryExitsComponent implements OnInit {
-
+    @Input() opened: boolean = false;  // Recibe el estado desde el componente padre
     isEditMode: boolean = false;
     userid!:number
     exitedProducts: any[] = [];
@@ -33,6 +33,8 @@ export class InventoryExitsComponent implements OnInit {
     startdateformatselected!:any
     originalExitedProducts: any[] = [];
     productlist: any[] = []
+    startDate!:any
+    endDate!:any
   
     constructor(private route:ActivatedRoute, private cd:Router, private productService:ProductService, private serieService:SerieService,
                 private entryService:EntryService, private exitService:ExitService, private cdr: ChangeDetectorRef,  private zone: NgZone) { 
@@ -70,17 +72,20 @@ export class InventoryExitsComponent implements OnInit {
                     this.productobject.exit_point = product.exit_point
                     this.productobject.proyect = product.proyect
                     this.productobject.exit_guide = product.exit_guide
+                    this.startdateformatselected = this.pipedate.transform(product.exit_date, 'yyyy-MM-dd');
+                    this.productobject.exit_date = this.startdateformatselected;
 
                     console.log(this.productobject)
                     console.log(product.id)
                   
-                    this.productService.updateExitandProyectandGuide(product.id, this.productobject).subscribe({
+                    this.productService.UpdateExitandProyectandGuideandExitDate(product.id, this.productobject).subscribe({
                       next: () => {
                         this.productService.getbyId(product.id).subscribe({
                           next: updated => {
                             product.exit_point = updated.exit_point;
                             product.proyect = updated.proyect;
                             product.exit_guide = updated.exit_guide;
+                            product.exit_date = updated.exit_date;
                     
                             console.log("Producto actualizado manualmente:", product);
                     
@@ -115,17 +120,20 @@ export class InventoryExitsComponent implements OnInit {
                     this.productobject.exit_point = product.exit_point
                     this.productobject.proyect = product.proyect
                     this.productobject.exit_guide = product.exit_guide
+                    this.startdateformatselected = this.pipedate.transform(product.exit_date, 'yyyy-MM-dd');
+                    this.productobject.exit_date = this.startdateformatselected;
 
                     console.log(this.productobject)
                     console.log(product.id)
                   
-                    this.productService.updateExitandProyectandGuide(product.id, this.productobject).subscribe({
+                    this.productService.UpdateExitandProyectandGuideandExitDate(product.id, this.productobject).subscribe({
                       next: () => {
                         this.productService.getbyId(product.id).subscribe({
                           next: updated => {
                             product.exit_point = updated.exit_point;
                             product.proyect = updated.proyect;
                             product.exit_guide = updated.exit_guide;
+                            product.exit_date = updated.exit_date;
                     
                             console.log("Producto actualizado manualmente:", product);
                     
@@ -256,8 +264,8 @@ export class InventoryExitsComponent implements OnInit {
       const selectedDate = this.pipedate.transform(date, 'yyyy-MM-dd');
     
       this.exitedProducts = this.originalExitedProducts.filter(product => {
-        const productDate = this.pipedate.transform(product.date, 'yyyy-MM-dd');
-        return productDate === selectedDate;
+        const productexitDate = this.pipedate.transform(product.exit_date, 'yyyy-MM-dd');
+        return productexitDate === selectedDate;
       });
     
       console.log("Productos filtrados por fecha:", this.exitedProducts);
@@ -277,7 +285,60 @@ export class InventoryExitsComponent implements OnInit {
       console.log("Productos filtrados por fecha:", this.exitedProducts);
     }
 
-    exportToExcel(): void {
+    deployproductsbyDescription(description:any){
+      if (!description) {
+        this.exitedProducts = this.originalExitedProducts // Si no hay fecha seleccionada, recarga todos
+        return;
+      }
+  
+      this.exitedProducts = this.originalExitedProducts.filter(product => {
+        return product.description && product.description.toLowerCase().includes(description.toLowerCase());
+      });
+    
+      console.log("Productos filtrados por descripcion:", this.exitedProducts);
+    }
+
+    deployproductsbyDateRange(startDate: any, endDate: any) {
+      if (!startDate && !endDate) {
+        this.exitedProducts = this.originalExitedProducts; // Si no hay fechas seleccionadas, recarga todos los productos
+        return;
+      }
+
+      const formattedStartDate = this.pipedate.transform(startDate, 'yyyy-MM-dd');
+      const formattedEndDate = endDate ? this.pipedate.transform(endDate, 'yyyy-MM-dd') : formattedStartDate;
+
+      if (!formattedStartDate) {
+        console.error("La fecha de inicio no es válida");
+        return;
+      }
+
+      if (endDate && !formattedEndDate) {
+        console.error("La fecha de fin no es válida");
+        return;
+      }
+
+      this.exitedProducts = this.originalExitedProducts.filter(product => {
+        const productDate = this.pipedate.transform(product.exit_date, 'yyyy-MM-dd');
+
+        // Verificar si productDate es null o undefined antes de hacer la comparación
+        if (!productDate) {
+          return false; // Excluir el producto si la fecha no es válida
+        }
+
+        // Asegurarse de que las fechas no sean null antes de la comparación
+        return (productDate >= (formattedStartDate ?? '') && productDate <= (formattedEndDate ?? ''));
+      });
+
+      console.log("Productos filtrados por rango de fechas:", this.exitedProducts);
+    }
+
+    onStartDateChange() {
+      if (!this.startDate) {
+        this.endDate = null;  // Si no hay fecha en startDate, limpiamos endDate
+      }
+    }
+
+    /*exportToExcel(): void {
         const exportData = this.exitedProducts.map(product => {
           const serie = product.selected_serie || {};
           const quantity = serie.quantity ?? 0;
@@ -321,5 +382,61 @@ export class InventoryExitsComponent implements OnInit {
           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
         });
         FileSaver.saveAs(blob, 'salidas.xlsx');
-      }
+      }*/
+    
+    exportToExcel(): void {
+             const exportData: { [key: string]: any }[] = [];;
+           
+             // Recorremos cada producto en exitedProducts
+             this.exitedProducts.forEach(product => {
+               // Filtramos las series con cantidad mayor a 0
+               const validSeries = product.series.filter((serie: any) => serie.quantity > 0);
+           
+               // Si el producto tiene series válidas, las agregamos a la exportación
+               validSeries.forEach((serie: any) => {
+                 const quantity = serie.quantity ?? 0;
+                 const totalAmount = quantity * product.unit_price;
+                 const finalAmount = product.type_change ? totalAmount * product.type_change : totalAmount;
+           
+                 // Creamos una fila para cada serie válida
+                 exportData.push({
+                   Código: `M0000${product.id}`,
+                   Tipo: product.type,
+                   Importados: product.imported,
+                   Codigo_minsa: product.minsa_code,
+                   Descripción_Minsa: product.minsa_description,
+                   Descripcion: product.description,
+                   Marca: product.brand,
+                   Modelo: product.model,
+                   Procedencia: product.origin,
+                   Serie_Lote: serie.name || '',
+                   Año_Fabricacion: product.date_manufacture,
+                   Proveedor: product.supplier,
+                   Cantidad: quantity,
+                   Fecha_de_Salida: product.exit_date,
+                   Guia_Salida: product.exit_guide,
+                   Proyecto: product.proyect,
+                   Responsable: product.responsible,
+                   Moneda_Factura: product.coin_bill,
+                   Precio_Unitario: product.unit_price,
+                   Cantidad_x_precio: totalAmount,
+                   Tipo_Cambio: product.type_change,
+                   Precio_Total: finalAmount,
+                   Factura: product.bill_text,
+                   Fecha_Factura: product.date_bill
+                 });
+               });
+             });
+           
+             // Convertir los datos exportados a formato de Excel
+             const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
+             const workbook: XLSX.WorkBook = { Sheets: { 'Salidas': worksheet }, SheetNames: ['Salidas'] };
+             const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+           
+             // Crear un blob con los datos de Excel y descargarlo
+             const blob: Blob = new Blob([excelBuffer], {
+               type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+             });
+             FileSaver.saveAs(blob, 'salidas.xlsx');
+           }
 }

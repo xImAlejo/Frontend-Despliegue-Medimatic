@@ -53,6 +53,13 @@ export class ActivityService {
         catchError(this.handleError));
   }
 
+  getbyProyectId(proyectid:any): Observable<Activity> {
+    return this.http.get<Activity>(`${this.basePath}${proyectid}/getActivitiesbyProyectId/`, this.httpOptions)
+      .pipe(
+        retry(2),
+        catchError(this.handleError));
+  }
+
 
   update(id: any, item: any): Observable<Activity> {
     return this.http.put<Activity>(`${this.basePath}${id}/`, JSON.stringify(item), this.httpOptions)

@@ -68,8 +68,8 @@ export class ProductService {
         catchError(this.handleError));
   }
 
-  updateExitandProyectandGuide(id: any, item: any): Observable<Product> {
-    return this.http.put<Product>(`${this.basePath}${id}/UpdateExitandProyectandGuide/`, JSON.stringify(item), this.httpOptions)
+  UpdateExitandProyectandGuideandExitDate(id: any, item: any): Observable<Product> {
+    return this.http.put<Product>(`${this.basePath}${id}/UpdateExitandProyectandGuideandExitDate/`, JSON.stringify(item), this.httpOptions)
       .pipe(
         retry(2),
         catchError(this.handleError));

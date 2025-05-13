@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit {
         }
         if(this.TokenService.isAdmin()){
           console.log("Es administrador")
-          this.Router.navigate(['activity','register',this.TokenService.getId()])
+          this.Router.navigate(['inventory','register','entries',this.TokenService.getId()])
         }
         if(this.TokenService.isBiomedical()){
           console.log("Es biomedico")
@@ -45,7 +45,7 @@ export class LoginComponent implements OnInit {
         }
         if(this.TokenService.isAccountant()){
           console.log("Es contador")
-          this.Router.navigate(['activity','record',this.TokenService.getId()])
+          this.Router.navigate(['inventory','register','entries',this.TokenService.getId()])
         }
     },err=>{
         alert("usuario o contraseña incorrecta")

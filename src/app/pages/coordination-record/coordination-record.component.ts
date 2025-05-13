@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSelect } from '@angular/material/select';
@@ -17,6 +17,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./coordination-record.component.css']
 })
 export class CoordinationRecordComponent implements OnInit {
+  @Input() opened: boolean = false;  // Recibe el estado desde el componente padre
 
   displayedColumns: string[] = ['pos', 'fecha_registro', 'cliente_proyecto', 'detalle_actividad', 
                                 'prioridad', 'orden_trabajo', 'fecha_llegada',

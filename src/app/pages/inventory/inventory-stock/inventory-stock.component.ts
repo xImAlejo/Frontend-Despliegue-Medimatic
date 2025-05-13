@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Product } from 'src/app/models/product';
 import { Serie } from 'src/app/models/serie';
@@ -17,13 +17,13 @@ import * as FileSaver from 'file-saver';
   styleUrls: ['./inventory-stock.component.css']
 })
 export class InventoryStockComponent implements OnInit {
-
+  @Input() opened: boolean = false;  // Recibe el estado desde el componente padre
   isEditMode: boolean = false;
   userid!:number
   enteredProducts: any[] = [];
   displayedColumns: string[] = ['id','type', 'imported', 'minsa_code', 'minsa_description', 
     'description', 'brand', 'model',
-    'origin', 'serie', 'date_manufacture', 'supplier','quantity_enter','date', 'entry_guide', 'exit_guide', 
+    'origin', 'serie', 'date_manufacture', 'supplier','quantity_enter','date', 'exit_date', 'entry_guide', 'exit_guide', 
     'proyect', 'responsible', 'coin_bill', 'unit_price', 'total_amount', 'type_change', 'final_amount',
     'bill_text', 'date_bill']; // Agrega el resto
   productobject!:Product
@@ -33,6 +33,10 @@ export class InventoryStockComponent implements OnInit {
   pipedate:DatePipe = new DatePipe("en-US")
   startdateformatselected!:any
   productlist: any[] = []
+  startenterDate!:any
+  endenterDate!:any
+  startexitDate!:any
+  endexitDate!:any
 
   constructor(private route:ActivatedRoute, private cd:Router, private productService:ProductService, private serieService:SerieService,
               private entryService:EntryService, private exitService:ExitService, private cdr: ChangeDetectorRef) { 
@@ -204,7 +208,118 @@ export class InventoryStockComponent implements OnInit {
     console.log("Productos filtrados por fecha:", this.enteredProducts);
   }
 
-  exportToExcel(): void {
+  deployproductsbyDescription(description:any){
+    if (!description) {
+      this.enteredProducts = this.originalEnteredProducts // Si no hay fecha seleccionada, recarga todos
+      return;
+    }
+
+    this.enteredProducts = this.originalEnteredProducts.filter(product => {
+      return product.description && product.description.toLowerCase().includes(description.toLowerCase());
+    });
+  
+    console.log("Productos filtrados por descripcion:", this.enteredProducts);
+  }
+
+  deployproductsbyExitDate(date:any){
+    
+    if (!date) {
+      this.enteredProducts = this.originalEnteredProducts // Si no hay fecha seleccionada, recarga todos
+      return;
+    }
+  
+    const selectedDate = this.pipedate.transform(date, 'yyyy-MM-dd');
+  
+    this.enteredProducts = this.originalEnteredProducts.filter(product => {
+      const productexitDate = this.pipedate.transform(product.exit_date, 'yyyy-MM-dd');
+      return productexitDate === selectedDate;
+    });
+  
+    console.log("Productos filtrados por fecha de salida:", this.enteredProducts);
+    
+  }
+
+  deployEnterproductsbyDateRange(startDate: any, endDate: any) {
+    if (!startDate && !endDate) {
+      this.enteredProducts = this.originalEnteredProducts; // Si no hay fechas seleccionadas, recarga todos los productos
+      return;
+    }
+
+    const formattedStartDate = this.pipedate.transform(startDate, 'yyyy-MM-dd');
+    const formattedEndDate = endDate ? this.pipedate.transform(endDate, 'yyyy-MM-dd') : formattedStartDate;
+
+    if (!formattedStartDate) {
+      console.error("La fecha de inicio no es válida");
+      return;
+    }
+
+    if (endDate && !formattedEndDate) {
+      console.error("La fecha de fin no es válida");
+      return;
+    }
+
+    this.enteredProducts = this.originalEnteredProducts.filter(product => {
+      const productDate = this.pipedate.transform(product.date, 'yyyy-MM-dd');
+
+      // Verificar si productDate es null o undefined antes de hacer la comparación
+      if (!productDate) {
+        return false; // Excluir el producto si la fecha no es válida
+      }
+
+      // Asegurarse de que las fechas no sean null antes de la comparación
+      return (productDate >= (formattedStartDate ?? '') && productDate <= (formattedEndDate ?? ''));
+    });
+
+    console.log("Productos filtrados por rango de fechas:", this.enteredProducts);
+  }
+
+  deployExitproductsbyDateRange(startDate: any, endDate: any) {
+    if (!startDate && !endDate) {
+      this.enteredProducts = this.originalEnteredProducts; // Si no hay fechas seleccionadas, recarga todos los productos
+      return;
+    }
+
+    const formattedStartDate = this.pipedate.transform(startDate, 'yyyy-MM-dd');
+    const formattedEndDate = endDate ? this.pipedate.transform(endDate, 'yyyy-MM-dd') : formattedStartDate;
+
+    if (!formattedStartDate) {
+      console.error("La fecha de inicio no es válida");
+      return;
+    }
+
+    if (endDate && !formattedEndDate) {
+      console.error("La fecha de fin no es válida");
+      return;
+    }
+
+    this.enteredProducts = this.originalEnteredProducts.filter(product => {
+      const productDate = this.pipedate.transform(product.exit_date, 'yyyy-MM-dd');
+
+      // Verificar si productDate es null o undefined antes de hacer la comparación
+      if (!productDate) {
+        return false; // Excluir el producto si la fecha no es válida
+      }
+
+      // Asegurarse de que las fechas no sean null antes de la comparación
+      return (productDate >= (formattedStartDate ?? '') && productDate <= (formattedEndDate ?? ''));
+    });
+
+    console.log("Productos filtrados por rango de fechas:", this.enteredProducts);
+  }
+
+  onStartEnterDateChange() {
+    if (!this.startenterDate) {
+      this.endenterDate = null;  // Si no hay fecha en startDate, limpiamos endDate
+    }
+  }
+
+  onStartExitDateChange() {
+    if (!this.startexitDate) {
+      this.endexitDate = null;  // Si no hay fecha en startDate, limpiamos endDate
+    }
+  }
+
+  /*exportToExcel(): void {
       const exportData = this.enteredProducts.map(product => {
         const serie = product.selected_serie || {};
         const quantity = serie.quantity ?? 0;
@@ -248,6 +363,62 @@ export class InventoryStockComponent implements OnInit {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
       });
       FileSaver.saveAs(blob, 'inventario.xlsx');
-    }
-  
+    }*/
+      exportToExcel(): void {
+        const exportData: { [key: string]: any }[] = [];;
+      
+        // Recorremos cada producto en enteredProducts
+        this.enteredProducts.forEach(product => {
+          // Filtramos las series con cantidad mayor a 0
+          const validSeries = product.series.filter((serie: any) => serie.quantity > 0);
+      
+          // Si el producto tiene series válidas, las agregamos a la exportación
+          validSeries.forEach((serie: any) => {
+            const quantity = serie.quantity ?? 0;
+            const totalAmount = quantity * product.unit_price;
+            const finalAmount = product.type_change ? totalAmount * product.type_change : totalAmount;
+      
+            // Creamos una fila para cada serie válida
+            exportData.push({
+              Código: `M0000${product.id}`,
+              Tipo: product.type,
+              Importados: product.imported,
+              Codigo_minsa: product.minsa_code,
+              Descripción_Minsa: product.minsa_description,
+              Descripcion: product.description,
+              Marca: product.brand,
+              Modelo: product.model,
+              Procedencia: product.origin,
+              Serie_Lote: serie.name || '',
+              Año_Fabricacion: product.date_manufacture,
+              Proveedor: product.supplier,
+              Cantidad: quantity,
+              Fecha_de_Entrada: product.date,
+              Fecha_de_Salida: product.exit_date,
+              Guia_Ingreso: product.entry_guide,
+              Guia_Salida: product.exit_guide,
+              Proyecto: product.proyect,
+              Responsable: product.responsible,
+              Moneda_Factura: product.coin_bill,
+              Precio_Unitario: product.unit_price,
+              Cantidad_x_precio: totalAmount,
+              Tipo_Cambio: product.type_change,
+              Precio_Total: finalAmount,
+              Factura: product.bill_text,
+              Fecha_Factura: product.date_bill
+            });
+          });
+        });
+      
+        // Convertir los datos exportados a formato de Excel
+        const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
+        const workbook: XLSX.WorkBook = { Sheets: { 'Inventario': worksheet }, SheetNames: ['Inventario'] };
+        const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+      
+        // Crear un blob con los datos de Excel y descargarlo
+        const blob: Blob = new Blob([excelBuffer], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+        });
+        FileSaver.saveAs(blob, 'inventario.xlsx');
+      }
 }

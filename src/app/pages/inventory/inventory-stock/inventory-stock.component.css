@@ -137,3 +137,72 @@ textarea.mat-input-element {
 .custom-card-bg {
   background-color: #d6eff9 !important;
 }
+
+.widthlabels{
+  width: 90px;
+}
+
+.widthlabels2{
+  width: 70px;
+}
+
+/* Establecer la altura máxima para el contenedor */
+.table-container {
+  overflow-y: auto;
+}
+
+/* Fijar los encabezados de la tabla */
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 1; /* Para asegurarnos de que el encabezado se quede por encima del contenido */
+  background-color: #1e3a8a; /* Personaliza el color de fondo según lo necesites */
+}
+
+/* Estilo de los encabezados (puedes personalizar el color o el estilo según lo desees) */
+.mat-header-row {
+  background-color: #1e3a8a; /* Ajusta el color de fondo */
+  color: white; /* Color del texto */
+}
+
+.sidenav {
+  width: 250px; /* Ancho del sidebar */
+  background-color: #2c3e50; /* Fondo del sidebar */
+  color: white;
+}
+
+.mat-sidenav-content {
+  flex: 1;
+  overflow: auto;
+}
+
+.mat-toolbar {
+  background-color: #87CEEB;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+}
+
+.mat-toolbar .mat-icon-button {
+  display: inline-block;
+}
+
+.mat-toolbar img {
+  height: 50px;
+  border-radius: 50%;
+}
+
+/* Para el botón en la barra de herramientas */
+.mat-toolbar button {
+  background-color: transparent;
+  border: none;
+  color: white;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .sidenav {
+    width: 100%;
+  }
+}

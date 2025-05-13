@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSelect } from '@angular/material/select';
@@ -8,6 +8,7 @@ import { ActivityService } from 'src/services/activity/activity.service';
 import { UserService } from 'src/services/user/user.service';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TokenService } from 'src/services/token/token.service';
 
 @Component({
   selector: 'app-activity-register',
@@ -15,7 +16,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./activity-register.component.css']
 })
 export class ActivityRegisterComponent implements OnInit {
-
+  @Input() opened: boolean = false;  // Recibe el estado desde el componente padre
   activityobject!:Activity
   activityform!:FormGroup
   userlist:User[] = []
@@ -26,8 +27,9 @@ export class ActivityRegisterComponent implements OnInit {
   pipedate:DatePipe = new DatePipe("en-US")
   userid!:number
   userobject!:User
+  currentUrl:string = '';
 
-  constructor(private formBuilder: FormBuilder, private activityService:ActivityService, private userService:UserService,private route:ActivatedRoute) { 
+  constructor(private formBuilder: FormBuilder, private activityService:ActivityService, private userService:UserService,private route:ActivatedRoute, private cd:Router,  private TokenService:TokenService) { 
     this.activityobject = {} as Activity
     this.userobject = {} as User
   }
@@ -50,6 +52,12 @@ export class ActivityRegisterComponent implements OnInit {
       priority:['',Validators.required],
       user:['',Validators.required],
      })
+
+    this.currentUrl = this.cd.url;
+
+    this.cd.events.subscribe(() => {
+      this.currentUrl = this.cd.url;
+    });
 
   }
 

@@ -1,192 +1,83 @@
-<app-header-app></app-header-app>
-<div class="p-6" style="background-image: url('assets/images/fondo.jpg'); background-size: cover; background-repeat: no-repeat; background-position: center; min-height: 100vh;">
-  <div class="flex items-center justify-between mb-4">
-    <div *ngIf="this.userobject.rol != 3 && this.userobject.rol != 4" class="flex items-center gap-2">
-      <mat-card class="w-full mx-auto p-6 custom-card-bg">
-      <div class="flex items-center gap-4 flex-nowrap pt-4">
-        <label class="font-semibold text-black pb-5">PERSONAL:</label>
-        
-        <mat-form-field appearance="outline" class="w-48">
-          <mat-select [(ngModel)]="activityobject.user">
-            <ng-container *ngFor="let user of userlist">
-              <mat-option *ngIf="user.rol != 2" [value]="user.id">
-                {{ user.name }}
-              </mat-option>
-            </ng-container>
-          </mat-select>
-        </mat-form-field>
-        <span class="pb-5">
-          <button mat-raised-button class="bg-green-300 px-6 text-black rounded border border-black" (click)="deployActivitiesbyUser(activityobject.user)">VER</button>
-        </span>
-      </div>
+<app-header-app (toggleSidebar)="opened = $event"></app-header-app>
+<!-- Sidebar -->
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #sidenav mode="side" [opened]="opened" class="sidenav">
+    <!-- Aquí irán los enlaces del navbar lateral -->
+    <app-header-sidenav></app-header-sidenav> 
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <div class="p-6 activity-record-container" style="background-image: url('assets/images/fondo_2.png'); background-size: cover; background-repeat: no-repeat; background-position: center; min-height: 100vh;">
+      <!-- Contenedor de filtro y tarea -->
+      <mat-card class="w-full mx-auto p-6 custom-card-bg"> 
+        <div class="flex items-center justify-between mb-4">
+          <div *ngIf="this.userobject.rol != 3 && this.userobject.rol != 4" class="flex items-center gap-2">
+            <mat-card class="w-full mx-auto p-6 custom-card-bg">
+              <div class="flex items-center gap-4 flex-nowrap pt-4">
+                <label class="font-semibold text-black pb-5">PERSONAL:</label>
+                <mat-form-field appearance="outline" class="w-48">
+                  <mat-select [(ngModel)]="activityobject.user" (selectionChange)="deployActivitiesbyUser(activityobject.user)">
+                    <ng-container *ngFor="let user of userlist">
+                      <mat-option *ngIf="user.rol != 2" [value]="user.id">
+                        {{ user.name }}
+                      </mat-option>
+                    </ng-container>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </mat-card>
+          </div>
+        </div>
+
+        <!-- Títulos de los proyectos -->
+        <div *ngFor="let proyect of proyectlist">
+          <!-- Título del Proyecto -->
+          <div class="project-title">
+            <mat-card-title class="font-semibold text-xl">{{ proyect.name }}</mat-card-title>
+          </div>
+
+          <!-- Mostrar actividades del proyecto -->
+          <div *ngIf="(projectActivities.get(proyect.id)?.length ?? 0) > 0">
+            <div *ngFor="let activity of projectActivities.get(proyect.id)" class="activity-card">
+              <mat-card class="task-card">
+                <mat-card-title>{{ activity.task }}</mat-card-title>
+                <mat-card-content>
+                  <p><strong>Detalle:</strong> {{ activity.detail }}</p>
+                  <p><strong>Fecha de Asignación:</strong> {{ activity.asignation_date | date: 'dd/MM/yyyy' }}</p>
+                  <p><strong>Fecha Límite:</strong> {{ activity.limit_date | date: 'dd/MM/yyyy' }}</p>
+                  <p><strong>Estado:</strong> {{ activity.state }}</p>
+                  <p><strong>Progreso:</strong> {{ activity.progress }}%</p>
+                </mat-card-content>
+              </mat-card>
+            </div>
+          </div>
+
+          <!-- Si no hay tareas activas -->
+          <div *ngIf="(projectActivities.get(proyect.id)?.length ?? 0) === 0" class="no-tasks-message">
+            No active tasks for this project
+          </div>
+
+           <!-- Añadir un log aquí para verificar el contenido del Map 
+          <div *ngIf="(projectActivities.get(proyect.id) || []).length === undefined" class="no-tasks-message">
+            <p>Verificando actividades: {{ projectActivities.get(proyect.id) | json }}</p>
+          </div>-->
+        </div>
+
+        <!-- Tareas completadas -->
+        <div class="completed-tasks">
+          <mat-card-title>Tareas Completadas</mat-card-title>
+          <div *ngFor="let activity of activitylist">
+            <div *ngIf="activity.state === 'TERMINADO' && activity.progress === '100%'">
+              <mat-card class="completed-task-card">
+              <mat-card-title>{{ activity.task }}</mat-card-title>
+              <mat-card-content>
+                <p><strong>Detalle:</strong> {{ activity.detail }}</p>
+                <p><strong>Fecha de Finalización:</strong> {{ activity.finalization_date | date: 'dd/MM/yyyy HH:mm:ss' }}</p>
+              </mat-card-content>
+            </mat-card>
+            </div>
+          </div>
+        </div>
       </mat-card>
     </div>
-
-    <div class="flex gap-2 pb-5">
-      <button mat-raised-button class="bg-green-300 px-6 text-black rounded border border-black" (click)="isEditMode = true">EDITAR</button>
-      <button mat-raised-button class="bg-green-300 px-6 text-black rounded border border-black" (click)="saveChanges()">GUARDAR</button>
-    </div>
-  </div>
-
-  <!-- Tabla -->
-  <div class="overflow-auto shadow-md rounded border border-gray-300 max-h-[500px] max-w-[5000px]">
-    <table mat-table [dataSource]="activitylist" class="min-w-full mat-elevation-z1">
-
-      <!-- Define columnas -->
-      <ng-container matColumnDef="pos">
-        <th mat-header-cell *matHeaderCellDef class="index-cell">#</th>
-        <td mat-cell *matCellDef="let element" class="index-cell">{{ element.id }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="tarea">
-        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">TAREA</th>
-        <td mat-cell *matCellDef="let element">
-          <ng-container *ngIf="isEditMode && (this.userobject.rol == 2 || this.userobject.rol == 1); else taskText">
-            <input [(ngModel)]="element.task" class="border border-gray-400 rounded px-2 py-1 w-[300px]">
-          </ng-container>
-          <ng-template #taskText>{{ element.task }}</ng-template>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="detalle">
-        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">DETALLE</th>
-        <td mat-cell *matCellDef="let element">
-          <ng-container *ngIf="isEditMode && (this.userobject.rol == 2 || this.userobject.rol == 1); else detailText">
-            <input [(ngModel)]="element.detail" class="border border-gray-400 rounded px-2 py-1 w-[300px]">
-          </ng-container>
-          <ng-template #detailText>{{ element.detail }}</ng-template>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="area_o_proyecto">
-        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">AREA O PROYECTO</th>
-        <td mat-cell *matCellDef="let element">
-          <ng-container *ngIf="isEditMode && (this.userobject.rol == 2 || this.userobject.rol == 1); else areaText">
-            <input [(ngModel)]="element.area" class="border border-gray-400 rounded px-2 py-1 w-[300px]">
-          </ng-container>
-          <ng-template #areaText>{{ element.area }}</ng-template>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="prioridad">
-        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">PRIORIDAD</th>
-        <td mat-cell *matCellDef="let element">
-          <ng-container *ngIf="isEditMode && (this.userobject.rol == 2 || this.userobject.rol == 1); else priorityText">
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-select [(ngModel)]="element.priority">
-                <mat-option *ngFor="let priority of prioritybox" [value]="priority">
-                  {{ priority }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </ng-container>
-          <ng-template #priorityText>{{ element.priority }}</ng-template>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="fecha_de_asignacion">
-        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">FECHA DE ASIGNACION</th>
-        <td mat-cell *matCellDef="let element">
-          <ng-container *ngIf="isEditMode && (this.userobject.rol == 2 || this.userobject.rol == 1); else assignationText">
-            <input type="datetime-local" [(ngModel)]="element.asignation_date" class="border border-gray-400 rounded px-2 py-1 w-[300px]">
-          </ng-container>
-          <ng-template #assignationText>{{ element.asignation_date | date: 'dd/MM/yyyy HH:mm:ss': 'UTC'}}</ng-template>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="fecha_limite">
-        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">FECHA LIMITE</th>
-        <td mat-cell *matCellDef="let element">
-          <ng-container *ngIf="isEditMode && (this.userobject.rol == 2 || this.userobject.rol == 1); else limitText">
-            <input type="datetime-local" [(ngModel)]="element.limit_date" class="border border-gray-400 rounded px-2 py-1 w-[300px]">
-          </ng-container>
-          <ng-template #limitText>{{ element.limit_date | date: 'dd/MM/yyyy HH:mm:ss': 'UTC'}}</ng-template>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="finalization_date">
-        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">FECHA DE FINALIZACION</th>
-        <td mat-cell *matCellDef="let element">{{ element.finalization_date | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="estado">
-        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">ESTADO</th>
-        <td mat-cell *matCellDef="let element">
-          <ng-container *ngIf="isEditMode; else estadoText">
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-select [(ngModel)]="element.state">
-                <mat-option *ngFor="let state of states" [value]="state">
-                  {{ state }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </ng-container>
-          <ng-template #estadoText>{{ element.state }}</ng-template>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="progreso">
-        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">PROGRESO</th>
-        <td mat-cell *matCellDef="let element">
-          <ng-container *ngIf="isEditMode; else progresoText">
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-select [(ngModel)]="element.progress">
-                <mat-option *ngFor="let progress of progressOptions" [value]="progress">
-                  {{ progress }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </ng-container>
-          <ng-template #progresoText>{{ element.progress }}</ng-template>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="assigned_to">
-        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">ASIGNADO</th>
-        <td mat-cell *matCellDef="let element">{{ getUserbyId(element.user)}}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="done">
-        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">DONE</th>
-        <td mat-cell *matCellDef="let element">
-          <mat-checkbox
-          [checked]="element.done == 1"
-          (change)="onDoneChange($event.checked, element)">
-          </mat-checkbox>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="observaciones">
-        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">OBSERVACIONES</th>
-        <td mat-cell *matCellDef="let element">
-          <ng-container *ngIf="isEditMode && this.userobject.rol != 1; else observacionesText">
-            <input [(ngModel)]="element.observation" class="border border-gray-400 rounded px-2 py-1 w-[300px]">
-          </ng-container>
-          <ng-template #observacionesText>{{ element.observation }}</ng-template>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="notes">
-        <th mat-header-cell *matHeaderCellDef class="bg-sky-300 text-white">NOTAS</th>
-        <td mat-cell *matCellDef="let element">
-          <ng-container *ngIf="isEditMode && (this.userobject.rol == 2 || this.userobject.rol == 1); else notesText">
-            <input [(ngModel)]="element.notes" class="border border-gray-400 rounded px-2 py-1 w-[300px]">
-          </ng-container>
-          <ng-template #notesText>{{ element.notes }}</ng-template>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="delete">
-        <th mat-header-cell *matHeaderCellDef class="action-cell"></th>
-        <td mat-cell *matCellDef="let element" class="action-cell">
-          <button mat-icon-button class="bg-red-500 px-6 text-black rounded border border-red" (click)="deleteActivity(element.id)"><mat-icon>delete</mat-icon></button>
-        </td>
-      </ng-container>
-
-      <!-- Repite para el resto: proyecto, prioridad, fechas, progreso, done, observaciones, etc -->
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-  </div>
-</div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

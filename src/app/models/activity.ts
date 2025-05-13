@@ -15,4 +15,5 @@ export interface Activity{
     observation:string
     notes:string
     user:number
+    proyect:number
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input,  OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Product } from 'src/app/models/product';
 import { User } from 'src/app/models/user';
@@ -13,6 +13,7 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrls: ['./register-entries.component.css']
 })
 export class RegisterEntriesComponent implements OnInit {
+  @Input() opened: boolean = false;  // Recibe el estado desde el componente padre
   registerentriesform!:FormGroup
   productobject!:Product
   pipedate:DatePipe = new DatePipe("en-US")

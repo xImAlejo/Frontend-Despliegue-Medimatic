@@ -17,6 +17,7 @@ export interface Product{
     entry_point:string
     exit_point:string
     date:Date
+    exit_date:Date
     entry_guide:string
     exit_guide:string
     proyect:string

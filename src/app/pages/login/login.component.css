@@ -1,53 +1,200 @@
-::ng-deep mat-card {
-    background-color: white !important;
-    color: black !important;
-  }
-  
-  ::ng-deep mat-card-title {
-    color: black !important;
-  }
-  
-  ::ng-deep mat-form-field {
-    color: black !important;
-  }
-  
-  ::ng-deep mat-form-field.mat-form-field-appearance-outline .mat-form-field-outline {
-    color: black !important;
-    border-color: black !important;
-  }
-  
-  ::ng-deep .mat-mdc-text-field-wrapper {
-    background-color: white !important;
-    border-color: black !important;
-  }
-  
-  ::ng-deep .mat-mdc-form-field-infix input {
-    color: black !important;
-    background-color: white !important;
-  }
-  
-  ::ng-deep .mat-mdc-form-field-infix input::placeholder {
-    color: black !important;
-    opacity: 1 !important;
-  }
-  
-  ::ng-deep .mat-mdc-form-field-infix .mat-icon {
-    color: black !important;
-  }
-  
-  ::ng-deep .mat-mdc-form-field-outline {
-    border-color: black !important;
-  }
-  
-  ::ng-deep .mat-mdc-form-field-outline-thick {
-    border-color: black !important;
-  }
+/* Estilos generales para el fondo y contenedor del login */
+.login-container {
+    background: none; /* Eliminar el fondo verde de los costados */
+    height: 100vh; /* Asegura que ocupe todo el alto de la pantalla */
+    display: flex;
+    justify-content: center; /* Centra el contenido horizontalmente */
+    align-items: center; /* Centra el contenido verticalmente */
+    text-align: center; /* Centra el texto dentro del contenedor */
+}
 
-  ::ng-deep mat-label {
-    color: black !important;
-  }
+/* Estilos para el mat-card */
+.login-container ::ng-deep mat-card {
+    background-color: #ffffff; /* Fondo blanco para el card */
+    color: black;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    padding: 3rem;
+    width: 100%;
+    max-width: 400px; /* Limita el ancho máximo */
+    margin: 0 auto; /* Centra el card horizontalmente */
+}
 
-  ::ng-deep button[disabled] {
-    background-color: #d3d3d3 !important;
-    color: black !important; 
-  }
+/* Título del mat-card */
+.login-container ::ng-deep mat-card-title {
+    color: #333;
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+/* Estilos de los campos de texto */
+.login-container ::ng-deep mat-form-field.custom-form-field {
+    position: relative;
+    margin-bottom: 2.0rem;  /* Espacio aumentado entre los campos */
+    height: 56px;  /* Mantener la altura consistente */
+}
+
+/* Estilo del borde del mat-form-field */
+.login-container ::ng-deep .custom-form-field .mat-form-field-outline {
+    border-color: #4CAF50;
+    border-width: 2px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+/* Aseguramos que el mat-form-field y el icono estén alineados correctamente */
+.login-container ::ng-deep .custom-form-field {
+    width: 100%;
+    position: relative;
+    height: 56px;  /* Mantiene la altura consistente */
+}
+
+/* Estilo del borde rojo en caso de error */
+.login-container ::ng-deep .custom-form-field.ng-invalid.ng-touched .mat-form-field-outline {
+    border-color: red;
+    border-width: 2px;
+}
+
+/* Estilo de los inputs */
+.login-container ::ng-deep .mat-form-field-infix input {
+    color: #333;
+    background-color: transparent;
+    font-size: 1rem;
+    border-radius: 8px;
+    height: 100%;
+    padding-right: 40px; /* Espacio adicional para el ícono */
+}
+
+/* Aseguramos que el ícono esté dentro del mat-form-field y a la derecha */
+.login-container ::ng-deep .mat-mdc-form-field-infix {
+    display: flex;
+    align-items: center; /* Centra los elementos verticalmente */
+    justify-content: flex-start; /* Asegura que el icono y el input estén alineados */
+    width: 100%;
+}
+
+/* Estilo cuando el input está en foco */
+.login-container ::ng-deep mat-form-field.custom-form-field input:focus {
+    border-color: #4CAF50 !important; /* Verde en el enfoque */
+    outline: none;
+}
+
+/* Estilo para los placeholders */
+.login-container ::ng-deep .mat-mdc-form-field-infix input::placeholder {
+    color: #888; /* Placeholder en gris claro */
+}
+
+/* Iconos dentro de los campos */
+.login-container ::ng-deep .mat-mdc-form-field-infix .mat-icon {
+    color: #4CAF50; /* Color verde para el ícono */
+    font-size: 1.25rem; /* Ajuste adecuado del tamaño del ícono */
+    position: absolute;
+    right: 10px; /* Alinea el ícono a la derecha */
+    top: 50%;
+    transform: translateY(-50%); /* Centrado vertical */
+}
+
+/* Estilo de las etiquetas */
+.login-container ::ng-deep mat-label {
+    color: #333;
+    font-weight: 500;
+}
+
+/* Estilo para los mensajes de error */
+.login-container ::ng-deep .mat-error {
+    color: red;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+/* Animación de transición en los campos */
+.login-container ::ng-deep mat-form-field, mat-label, mat-error {
+    transition: all 0.2s ease;
+}
+
+/* Estilo para el botón de ingreso */
+.login-container ::ng-deep button {
+    background-color: #4CAF50;
+    color: white;
+    font-size: 1.1rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    width: 100%;
+    margin-top: 1.5rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Efecto de hover en el botón */
+.login-container ::ng-deep button:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+/* Estilo cuando el botón está deshabilitado */
+.login-container ::ng-deep button[disabled] {
+    background-color: #d3d3d3;
+    color: black;
+    cursor: not-allowed;
+}
+
+/* Mejoras en el contenedor */
+.login-container mat-card {
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    padding: 2rem;
+}
+
+/* Aseguramos que los mat-form-field y otros elementos no se solapen */
+.login-container mat-card-title {
+    color: #333;
+    font-size: 1.75rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Aseguramos que el contenedor de la contraseña tenga la estructura correcta */
+.login-container ::ng-deep .password-container {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    position: relative;
+    height: 56px;  /* Asegura que tenga la misma altura que el input */
+}
+
+/* Aseguramos que el input tenga suficiente espacio para el ícono */
+.login-container ::ng-deep mat-form-field input {
+    padding-right: 40px; /* Hace espacio para el icono */
+}
+
+/* Alineamos el icono al final del campo de texto */
+.login-container ::ng-deep .password-container button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%); /* Centrado vertical */
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Aseguramos que todo funcione bien en dispositivos pequeños */
+@media (max-width: 600px) {
+    .login-container {
+        padding: 2rem;
+    }
+
+    mat-card {
+        width: 100%;
+        padding: 1.5rem;
+    }
+
+    mat-card-title {
+        font-size: 1.5rem;
+    }
+}

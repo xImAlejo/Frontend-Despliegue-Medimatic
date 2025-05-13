@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivityService } from 'src/services/activity/activity.service';
 import { Activity } from 'src/app/models/activity';
 import { UserService } from 'src/services/user/user.service';
 import { User } from 'src/app/models/user';
+import { Proyect } from 'src/app/models/proyect';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ProyectService } from 'src/services/proyect/proyect.service';
 
 @Component({
   selector: 'app-activity-record',
@@ -12,7 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./activity-record.component.css']
 })
 export class ActivityRecordComponent implements OnInit {
-
+  @Input() opened: boolean = false;  // Recibe el estado desde el componente padre
   displayedColumns: string[] = ['pos', 'tarea', 'detalle', 'area_o_proyecto', 
                                 'prioridad', 'fecha_de_asignacion', 'fecha_limite',
                                 'finalization_date', 'estado', 'progreso','assigned_to', 'done', 'observaciones','notes']; // Agrega el resto
@@ -25,11 +27,14 @@ export class ActivityRecordComponent implements OnInit {
 
   activitylist:Activity[] = []
   userlist:User[] = []
+  proyectlist:Proyect[] = []
   activityobject!:Activity
   startdateformatselected!:any
   pipedate:DatePipe = new DatePipe("en-US")
   isEditMode: boolean = false;
   userMap: Map<number, string> = new Map();
+  isLoading: boolean = false;
+  projectActivities: Map<number, Activity[]> = new Map();
 
   states: string[] = ['SIN EMPEZAR', 'EN PROGRESO', 'PAUSADO', 'TERMINADO', 'ANULADO'];
   progressOptions: string[] = ['0%-25%', '25%-50%', '50%-75%', '75%-99%', '100%'];
@@ -38,7 +43,7 @@ export class ActivityRecordComponent implements OnInit {
   userid!:number
   userobject!:User
 
-  constructor(private activityService:ActivityService, private userService:UserService,private route:ActivatedRoute) { 
+  constructor(private activityService:ActivityService, private userService:UserService,private route:ActivatedRoute, private proyectService:ProyectService) { 
     this.activityobject = {} as Activity
     this.userobject = {} as User
   }
@@ -56,6 +61,7 @@ export class ActivityRecordComponent implements OnInit {
       }
     })
     this.GetUsers()
+    this.getProyects()
     
   }
 
@@ -160,6 +166,34 @@ export class ActivityRecordComponent implements OnInit {
       console.log("Eliminado")
       this.GetActivities(this.userobject);
     })
+  }
+
+  getProyects(){
+    this.proyectService.getAll().subscribe((response:any) =>{
+      console.log(response.rows)
+      this.proyectlist = response.rows
+      this.loadActivitiesForProjects();
+    })
+  }
+
+  loadActivitiesForProjects(){
+    const requests = this.proyectlist.map(project => {
+    this.projectActivities.set(project.id, []); // Inicializamos cada proyecto con un array vacío
+
+    return this.activityService.getbyProyectId(project.id).toPromise()
+      .then((activities: any) => {
+        this.projectActivities.set(project.id, activities);
+        console.log('Actividades para el proyecto', project.id, activities);
+      })
+      .catch(error => {
+        console.error(`Error al obtener actividades para el proyecto ${project.id}:`, error);
+        this.projectActivities.set(project.id, []); // Si falla, dejamos un array vacío
+      });
+    });
+    
+    Promise.all(requests).then(() => {
+      console.log('Todas las actividades fueron cargadas correctamente.');
+    });
   }
 
 }

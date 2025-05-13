@@ -1,3 +1,19 @@
-.headbar{
-    background-color: #87CEEB;
+.headbar {
+    background-color: #87CEEB;  /* Set a consistent background */
+    padding: 16px 0;  /* Padding for better spacing */
+}
+
+.logo {
+    height: 40px;  /* Adjust the size of the logo */
+    margin-left: 20px;  /* Spacing from the left */
+}
+
+mat-toolbar {
+    display: flex;
+    align-items: center;  /* Center the content vertically */
+    justify-content: space-between;  /* Space out the items */
+}
+
+a {
+    display: inline-block;
 }

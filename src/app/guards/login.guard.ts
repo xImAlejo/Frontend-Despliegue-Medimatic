@@ -15,11 +15,15 @@ export class LoginGuard implements CanActivate {
            return false
         }
         if(this.TokenService.isAdmin()){
-          this.router.navigate(['activity','register',this.TokenService.getId()]);
+          this.router.navigate(['inventory','register','entries',this.TokenService.getId()]);
           return false
         }
         if(this.TokenService.isBiomedical()){
           this.router.navigate(['activity','record',this.TokenService.getId()]);
+          return false
+        }
+        if(this.TokenService.isAccountant()){
+          this.router.navigate(['inventory','register','entries',this.TokenService.getId()]);
           return false
         }
     }

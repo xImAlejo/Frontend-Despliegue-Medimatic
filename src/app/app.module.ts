@@ -21,6 +21,7 @@ import { InventoryExitsComponent } from './pages/inventory/inventory-exits/inven
 import { InventoryStockComponent } from './pages/inventory/inventory-stock/inventory-stock.component';
 import { RegisterEntriesComponent } from './pages/inventory/inventory-entries/register-entries/register-entries.component';
 import { EditSerieDialogComponent } from './pages/inventory/inventory-dialogs/edit-serie-dialog/edit-serie-dialog.component';
+import { HeaderSidenavComponent } from './pages/headers/header-sidenav/header-sidenav.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { EditSerieDialogComponent } from './pages/inventory/inventory-dialogs/ed
     InventoryExitsComponent,
     InventoryStockComponent,
     RegisterEntriesComponent,
-    EditSerieDialogComponent
+    EditSerieDialogComponent,
+    HeaderSidenavComponent
 
   ],
   imports: [
