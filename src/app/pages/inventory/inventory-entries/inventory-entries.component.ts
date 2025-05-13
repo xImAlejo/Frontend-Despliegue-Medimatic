@@ -382,7 +382,6 @@ export class InventoryEntriesComponent implements OnInit {
                Cantidad: quantity,
                Fecha_de_Entrada: product.date,
                Guia_Ingreso: product.entry_guide,
-               Guia_Salida: product.exit_guide,
                Proyecto: product.proyect,
                Responsable: product.responsible,
                Moneda_Factura: product.coin_bill,
