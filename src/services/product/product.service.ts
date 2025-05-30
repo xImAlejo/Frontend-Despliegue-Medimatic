@@ -8,8 +8,8 @@ import { catchError, Observable, retry, throwError } from 'rxjs';
 })
 export class ProductService {
  
-  //basePath = 'http://localhost:8000/product/ProductViewSets/';
-  basePath = 'https://medimatic-services-zzy7.onrender.com/product/ProductViewSets/';
+    basePath = 'http://localhost:8000/product/ProductViewSets/';
+  //basePath = 'https://medimatic-services-zzy7.onrender.com/product/ProductViewSets/';
 
   httpOptions = {
     headers: new HttpHeaders({
@@ -70,6 +70,13 @@ export class ProductService {
 
   UpdateExitandProyectandGuideandExitDate(id: any, item: any): Observable<Product> {
     return this.http.put<Product>(`${this.basePath}${id}/UpdateExitandProyectandGuideandExitDate/`, JSON.stringify(item), this.httpOptions)
+      .pipe(
+        retry(2),
+        catchError(this.handleError));
+  }
+
+  UpdateDatesandSupplierandEnterPointandEnterGuide(id:any, item:any): Observable<Product> {
+    return this.http.put<Product>(`${this.basePath}${id}/UpdateDatesandSupplierandEnterPointandEnterGuide/`, JSON.stringify(item), this.httpOptions)
       .pipe(
         retry(2),
         catchError(this.handleError));

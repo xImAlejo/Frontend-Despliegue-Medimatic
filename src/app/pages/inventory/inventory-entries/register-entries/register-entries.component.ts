@@ -87,7 +87,7 @@ export class RegisterEntriesComponent implements OnInit {
       console.log(response)
       this.onReset()
     },err =>{
-      alert("Producto ya existente")
+      alert("Faltan datos por completar")
       console.log(err)
     })
   }

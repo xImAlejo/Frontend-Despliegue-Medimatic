@@ -8,8 +8,8 @@ import { catchError, Observable, retry, throwError } from 'rxjs';
 })
 export class SerieService {
  
-  //basePath = 'http://localhost:8000/serie/SerieViewSets/';
-  basePath = 'https://medimatic-services-zzy7.onrender.com/serie/SerieViewSets/';
+    basePath = 'http://localhost:8000/serie/SerieViewSets/';
+  //basePath = 'https://medimatic-services-zzy7.onrender.com/serie/SerieViewSets/';
 
   httpOptions = {
     headers: new HttpHeaders({

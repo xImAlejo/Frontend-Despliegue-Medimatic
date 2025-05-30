@@ -100,7 +100,7 @@
           </ng-container>
 
           <ng-container matColumnDef="minsa_description">
-            <th mat-header-cell *matHeaderCellDef class="sticky-header bg-sky-300 text-white">DESCRIPCIÓN MINSA</th>
+            <th mat-header-cell *matHeaderCellDef class="sticky-header bg-sky-300 text-white">DESCRIPCIÓN REQUERIMIENTO</th>
             <td mat-cell *matCellDef="let element">{{ element.minsa_description }}</td>
           </ng-container>
 
@@ -121,19 +121,32 @@
 
           <ng-container matColumnDef="origin">
             <th mat-header-cell *matHeaderCellDef class="sticky-header bg-sky-300 text-white">PROCEDENCIA</th>
-            <td mat-cell *matCellDef="let element">{{ element.origin }}</td>
+            <td mat-cell *matCellDef="let element">
+              <ng-container *ngIf="isEditMode; else originText">
+                <input [(ngModel)]="element.origin" class="border border-gray-400 rounded px-2 py-1 w-[200px]">
+              </ng-container>
+              <ng-template #originText>
+                {{ element.origin}}
+              </ng-template>
+            </td>
           </ng-container>
 
           <ng-container matColumnDef="serie">
             <th mat-header-cell *matHeaderCellDef class="sticky-header bg-sky-300 text-white">SERIE/LOTE</th>
             <td mat-cell *matCellDef="let element">
-              <mat-form-field appearance="outline" class="w-full">
-                <mat-select [(ngModel)]="element.selected_serie" (selectionChange)="onSerieChange()">
-                  <mat-option *ngFor="let serie of element.series" [value]="serie">
-                    {{ serie.name }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
+              <ng-container *ngIf="element.series && element.series.length > 0; else noSeries">
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-select [(ngModel)]="element.selected_serie" (selectionChange)="onSerieChange()">
+                    <mat-option *ngFor="let serie of element.series" [value]="serie">
+                      {{ serie.name }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </ng-container>
+              <ng-template #noSeries>
+                <!-- Aquí puedes dejarlo vacío o poner un texto -->
+                <span></span>
+              </ng-template>
             </td>
           </ng-container>
 
@@ -160,13 +173,30 @@
           </ng-container>
 
           <ng-container matColumnDef="quantity_exit">
-            <th mat-header-cell *matHeaderCellDef class="sticky-header bg-sky-300 text-white">CANTIDAD</th>
+            <th mat-header-cell *matHeaderCellDef class="sticky-header bg-sky-300 text-white">CANTIDAD DE SERIE/LOTE</th>
             <td mat-cell *matCellDef="let element">
               <ng-container *ngIf="isEditMode; else quantityenterText">
-                <input [(ngModel)]="element.selected_serie.quantity" class="border border-gray-400 rounded px-2 py-1 w-full">
+                <ng-container *ngIf="element.selected_serie; else noSerieQuantity">
+                  <input type=number [(ngModel)]="element.selected_serie.quantity" class="border border-gray-400 rounded px-2 py-1 w-full">
+                </ng-container>
+                <ng-template #noSerieQuantity>
+                  <span>No hay serie, ni lote</span>
+                </ng-template>
               </ng-container>
               <ng-template #quantityenterText>
                 {{ getSelectedSerie(element)?.quantity || null }}
+              </ng-template>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="quantity_total_exit">
+            <th mat-header-cell *matHeaderCellDef class="sticky-header bg-sky-300 text-white">CANTIDAD TOTAL SALIDA</th>
+            <td mat-cell *matCellDef="let element">
+              <ng-container *ngIf="isEditMode; else quantitytotalexitText">
+                <input type=number [(ngModel)]="element.quantity_total_exit" class="border border-gray-400 rounded px-2 py-1 w-full">
+              </ng-container>
+              <ng-template #quantitytotalexitText>
+                {{ element.quantity_total_exit}}
               </ng-template>
             </td>
           </ng-container>
@@ -227,8 +257,13 @@
           </ng-container>
           <!-- Aqui agregarle una columna en el backend o tal vez lo pueda realizar sin eso-->
           <ng-container matColumnDef="total_amount">
-            <th mat-header-cell *matHeaderCellDef class="sticky-header bg-sky-300 text-white">CANTIDAD X PRECIO UNIT</th>
-            <td mat-cell *matCellDef="let element">{{ element.total_amount}}</td>
+            <th mat-header-cell *matHeaderCellDef class="sticky-header bg-sky-300 text-white">CANTIDAD DE SERIE/LOTE X PRECIO UNIT</th>
+            <td mat-cell *matCellDef="let element">{{ element.total_amount | number:'1.2-2'}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="total_amount_2">
+            <th mat-header-cell *matHeaderCellDef class="sticky-header bg-sky-300 text-white">CANTIDAD SALIDA X PRECIO UNIT</th>
+            <td mat-cell *matCellDef="let element">{{ element.total_amount_2 | number:'1.2-2'}}</td>
           </ng-container>
 
           <ng-container matColumnDef="type_change">
@@ -237,8 +272,13 @@
           </ng-container>
 
           <ng-container matColumnDef="final_amount">
-            <th mat-header-cell *matHeaderCellDef class="sticky-header bg-sky-300 text-white">PRECIO TOTAL EN SOLES</th>
+            <th mat-header-cell *matHeaderCellDef class="sticky-header bg-sky-300 text-white">PRECIO TOTAL SERIE/LOTE</th>
             <td mat-cell *matCellDef="let element">{{ element.final_amount | number:'1.2-2'}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="final_amount_2">
+            <th mat-header-cell *matHeaderCellDef class="sticky-header bg-sky-300 text-white">PRECIO TOTAL SALIDAS</th>
+            <td mat-cell *matCellDef="let element">{{ element.final_amount_2 | number:'1.2-2'}}</td>
           </ng-container>
 
           <ng-container matColumnDef="bill_text">

@@ -24,9 +24,9 @@ export class InventoryEntriesComponent implements OnInit {
   enteredProducts: any[] = [];
   displayedColumns: string[] = ['id','type', 'imported', 'minsa_code', 'minsa_description', 
     'description', 'brand', 'model',
-    'origin', 'serie', 'date_manufacture', 'supplier', 'entry_point','quantity','date', 'entry_guide', 
-    'proyect', 'responsible', 'coin_bill', 'unit_price', 'total_amount', 'type_change', 'final_amount',
-    'bill_text', 'date_bill', 'edit_serie']; // Agrega el resto
+    'origin', 'serie', 'date_manufacture', 'supplier', 'entry_point','quantity','quantity_total','date', 'entry_guide', 
+    'proyect', 'responsible', 'coin_bill', 'unit_price', 'total_amount', 'total_amount_2', 'type_change', 'final_amount',
+    'final_amount_2', 'bill_text', 'date_bill', 'edit_serie']; // Agrega el resto
   serieslist:string[] = []
   productobject!: Product
   pipedate:DatePipe = new DatePipe("en-US")
@@ -47,7 +47,7 @@ export class InventoryEntriesComponent implements OnInit {
     this.GetProducts()
   }
 
-  saveChanges() {
+  /*saveChanges() {
     if (!this.enteredProducts?.length) return;
 
   const updatePromises = this.enteredProducts.map(product => {
@@ -93,9 +93,108 @@ export class InventoryEntriesComponent implements OnInit {
     }).catch(error => {
       console.error("Error guardando cambios:", error);
     });
+  }*/
+
+  saveChanges() {
+    if (!this.enteredProducts?.length) return;
+
+    const updatePromises = this.enteredProducts.map(product => {
+      const selectedSerie = product.selected_serie;
+
+      // Si hay selectedSerie y quantity, actualizar cantidad y luego producto
+      if (selectedSerie && selectedSerie.quantity != null) {
+        if (selectedSerie.quantity === '') {
+          selectedSerie.quantity = 0;
+        }
+
+        return new Promise<void>((resolve, reject) => {
+          this.entryService.getbySerieId(selectedSerie.id).subscribe({
+            next: (response: any) => {
+              const updateOrCreateEntry = response.total > 0
+                ? this.entryService.updateQuantityBySerieId(selectedSerie.id, { quantity: selectedSerie.quantity })
+                : this.entryService.create({ serie: selectedSerie.id, quantity: selectedSerie.quantity });
+
+              updateOrCreateEntry.subscribe({
+                next: () => {
+                  this.updateProductFields(product).then(resolve).catch(reject);
+                },
+                error: (err: any) => {
+                  console.error("Error al guardar cantidad:", err);
+                  reject(err);
+                }
+              });
+            },
+            error: (err: any) => {
+              console.error("Error buscando serie:", err);
+              reject(err);
+            }
+          });
+        });
+      }
+
+      // Si NO hay selectedSerie, igual actualizar los campos del producto
+      return this.updateProductFields(product);
+    });
+
+    Promise.all(updatePromises).then(() => {
+      console.log("Todos los cambios guardados");
+      this.GetProducts();
+      this.isEditMode = false;
+    }).catch(error => {
+      console.error("Error guardando cambios:", error);
+    });
+  }
+
+  updateProductFields(product: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.startdateformatselected = this.pipedate.transform(product.date_manufacture, 'yyyy-MM-dd');
+      this.productobject.date_manufacture = this.startdateformatselected
+      this.startdateformatselected = this.pipedate.transform(product.date, 'yyyy-MM-dd');
+      this.productobject.date = this.startdateformatselected 
+      this.startdateformatselected = this.pipedate.transform(product.date_bill, 'yyyy-MM-dd');
+      this.productobject.date_bill = this.startdateformatselected
+      this.productobject.bill_text = product.bill_text;
+      this.productobject.supplier = product.supplier;
+      this.productobject.entry_point = product.entry_point;
+      this.productobject.entry_guide = product.entry_guide;
+      this.productobject.proyect = product.proyect;
+      this.productobject.origin = product.origin;
+      this.productobject.quantity_total = product.quantity_total;
+
+      this.productService.UpdateDatesandSupplierandEnterPointandEnterGuide(product.id, this.productobject).subscribe({
+        next: () => {
+          this.productService.getbyId(product.id).subscribe({
+            next: updated => {
+              product.date_manufacture = updated.date_manufacture;
+              product.date = updated.date;
+              product.date_bill = updated.date_bill;
+              product.bill_text = updated.bill_text;
+              product.supplier = updated.supplier;
+              product.entry_point = updated.entry_point;
+              product.entry_guide = updated.entry_guide;
+              product.proyect = updated.proyect;
+              product.origin = updated.origin;
+              product.quantity_total = updated.quantity_total;
+
+              console.log("Producto actualizado sin serie:", product);
+              this.enteredProducts = [...this.enteredProducts];
+              this.cdr.detectChanges();
+              resolve();
+            },
+            error: err => {
+              console.error("Error obteniendo producto actualizado:", err);
+              reject(err);
+            }
+          });
+        },
+        error: err => {
+          console.error("Error actualizando producto sin serie:", err);
+          reject(err);
+        }
+        });
+      });
   }
   
-
   GoToRegisterProducts(){
     console.log(this.userid)
     this.cd.navigate(['inventory','register','entries',this.userid])
@@ -148,6 +247,14 @@ export class InventoryEntriesComponent implements OnInit {
 
 //cleanProduct.selected_serie = validSeries[0];
 
+   // Nueva función para convertir fecha string 'yyyy-MM-dd' a objeto Date local
+  parseDateToLocal(dateString: string): Date | null {
+    if (!dateString) return null;
+    const parts = dateString.split('-');
+    if(parts.length < 3) return null;
+    return new Date(+parts[0], +parts[1] - 1, +parts[2]);
+  }
+
   filterEnteredProducts(products: any[], series: any[], entries: any[]) {
     this.enteredProducts = products.map(product => {
       const productSeries = series
@@ -160,6 +267,11 @@ export class InventoryEntriesComponent implements OnInit {
             quantity: entry ? entry.quantity : null // Si no hay entry, cantidad 0
           };
         }).filter(serie => serie.quantity !== 0);
+      
+      // Convertir fechas string a objetos Date locales para evitar desfase por zona horaria
+      product.date_manufacture = this.parseDateToLocal(product.date_manufacture);
+      product.date = this.parseDateToLocal(product.date);
+      product.date_bill = this.parseDateToLocal(product.date_bill);
 
       if (productSeries.length > 0) {
         const selectedSerie = productSeries[0];
@@ -171,18 +283,40 @@ export class InventoryEntriesComponent implements OnInit {
           finalAmount = totalAmount * product.type_change;
         }
 
+        const totalAmount2 = product.unit_price * (product.quantity_total ?? 0);
+        let finalAmount2 = totalAmount2;
+        if (product.type_change && product.type_change !== 0) {
+          finalAmount2 = totalAmount2 * product.type_change;
+        }
 
         return {
           ...product,
           series: productSeries,
           selected_serie: selectedSerie,
           total_amount: totalAmount,
-          final_amount: finalAmount
+          final_amount: finalAmount,
+          total_amount_2: totalAmount2,
+          final_amount_2: finalAmount2
         };
       }else {
-        return null; // eliminar el producto si no quedan series
+        // Producto sin series, pero igual lo incluimos con series vacías y sin selected_serie
+        const totalAmount2 = product.unit_price * (product.quantity_total ?? 0);
+        let finalAmount2 = totalAmount2;
+        if (product.type_change && product.type_change !== 0) {
+          finalAmount2 = totalAmount2 * product.type_change;
+        }
+
+        return {
+          ...product,
+          series: [],
+          selected_serie: null,
+          total_amount: 0,
+          final_amount: 0,
+          total_amount_2: totalAmount2,
+          final_amount_2: finalAmount2
+        };
       }
-    }).filter(product => product !== null);
+    });
     console.log(this.enteredProducts)
     this.originalEnteredProducts = this.enteredProducts
     this.productlist = this.enteredProducts
@@ -363,15 +497,18 @@ export class InventoryEntriesComponent implements OnInit {
            validSeries.forEach((serie: any) => {
              const quantity = serie.quantity ?? 0;
              const totalAmount = quantity * product.unit_price;
+             const totalAmount2 = product.total_amount_2 ?? (product.unit_price * product.quantity_total);
              const finalAmount = product.type_change ? totalAmount * product.type_change : totalAmount;
-       
+             const finalAmount2 = product.final_amount_2 ?? (product.type_change && product.type_change !== 0 
+              ? totalAmount2 * product.type_change
+              : totalAmount2);
              // Creamos una fila para cada serie válida
              exportData.push({
                Código: `M0000${product.id}`,
                Tipo: product.type,
                Importados: product.imported,
                Codigo_minsa: product.minsa_code,
-               Descripción_Minsa: product.minsa_description,
+               Descripción_Requerimiento: product.minsa_description,
                Descripcion: product.description,
                Marca: product.brand,
                Modelo: product.model,
@@ -379,21 +516,76 @@ export class InventoryEntriesComponent implements OnInit {
                Serie_Lote: serie.name || '',
                Año_Fabricacion: product.date_manufacture,
                Proveedor: product.supplier,
-               Cantidad: quantity,
+               Cantidad_de_serie_lote: quantity,
+                // Aquí va quantity_total (aunque para fila de serie normalmente no cambia, la pongo para que esté en orden)
+               Cantidad_total_entrada: product.quantity_total ?? 0,
                Fecha_de_Entrada: product.date,
                Guia_Ingreso: product.entry_guide,
                Proyecto: product.proyect,
                Responsable: product.responsible,
                Moneda_Factura: product.coin_bill,
                Precio_Unitario: product.unit_price,
-               Cantidad_x_precio: totalAmount,
+               Cantidad_serie_lote_x_precio: totalAmount,
+               // Aquí va total_amount_2
+               Cantidad_entrada_x_precio: totalAmount2,
                Tipo_Cambio: product.type_change,
-               Precio_Total: finalAmount,
+               Precio_Total_serie_lote: finalAmount,
+               // Aquí va final_amount_2
+               Precio_total_entrada: finalAmount2,
                Factura: product.bill_text,
                Fecha_Factura: product.date_bill
              });
            });
+
+           // Fila resumen usando quantity_total y totales 2, si quantity_total > 0
+          if (validSeries.length === 0 && (product.quantity_total ?? 0) > 0) {
+            const totalAmount2 = product.total_amount_2 ?? (product.unit_price * product.quantity_total);
+            const finalAmount2 = product.final_amount_2 ?? (product.type_change && product.type_change !== 0
+              ? totalAmount2 * product.type_change
+              : totalAmount2);
+
+            exportData.push({
+              Código: `M0000${product.id}`,
+              Tipo: product.type,
+              Importados: product.imported,
+              Codigo_minsa: product.minsa_code,
+              Descripción_Requerimiento: product.minsa_description,
+              Descripcion: product.description,
+              Marca: product.brand,
+              Modelo: product.model,
+              Procedencia: product.origin,
+              Serie_Lote: '', // Indicativo fila resumen
+              Año_Fabricacion: product.date_manufacture,
+              Proveedor: product.supplier,
+              Cantidad_de_serie_lote: 0,  // Para fila resumen no hay cantidad por serie
+
+              // Aquí va quantity_total con el valor correcto
+              Cantidad_total_entrada: product.quantity_total,
+
+              Fecha_de_Entrada: product.date,
+              Guia_Ingreso: product.entry_guide,
+              Proyecto: product.proyect,
+              Responsable: product.responsible,
+              Moneda_Factura: product.coin_bill,
+              Precio_Unitario: product.unit_price,
+              Cantidad_serie_lote_x_precio: 0,  // Cantidad por serie no aplica aquí
+
+              // Aquí va total_amount_2 con valor correcto
+              Cantidad_entrada_x_precio: totalAmount2,
+
+              Tipo_Cambio: product.type_change,
+              Precio_Total_serie_lote: 0,  // Precio total por serie no aplica aquí
+
+              // Aquí va final_amount_2 con valor correcto
+              Precio_total_entrada: finalAmount2,
+
+              Factura: product.bill_text,
+              Fecha_Factura: product.date_bill
+            });
+          }
          });
+
+         
        
          // Convertir los datos exportados a formato de Excel
          const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);

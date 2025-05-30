@@ -26,6 +26,11 @@ export interface Product{
     series_input:string
     selected_serie:string
     total_amount:number
+    total_amount_2:number
     final_amount:number
+    final_amount_2:number
     final_amount_bill:number
+    quantity_total: number
+    quantity_total_exit: number
+    quantity_total_stock:number
 }

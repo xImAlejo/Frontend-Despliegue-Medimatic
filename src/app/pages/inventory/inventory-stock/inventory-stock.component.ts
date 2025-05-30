@@ -23,8 +23,8 @@ export class InventoryStockComponent implements OnInit {
   enteredProducts: any[] = [];
   displayedColumns: string[] = ['id','type', 'imported', 'minsa_code', 'minsa_description', 
     'description', 'brand', 'model',
-    'origin', 'serie', 'date_manufacture', 'supplier','quantity_enter','date', 'exit_date', 'entry_guide', 'exit_guide', 
-    'proyect', 'responsible', 'coin_bill', 'unit_price', 'total_amount', 'type_change', 'final_amount',
+    'origin', 'serie', 'date_manufacture', 'supplier','quantity_enter','quantity_total_stock','date', 'exit_date', 'entry_guide', 'exit_guide', 
+    'proyect', 'responsible', 'coin_bill', 'unit_price', 'total_amount', 'total_amount_2', 'type_change', 'final_amount', 'final_amount_2',
     'bill_text', 'date_bill']; // Agrega el resto
   productobject!:Product
   serieobject!:Serie
@@ -128,6 +128,8 @@ export class InventoryStockComponent implements OnInit {
           };
         });
 
+        product.quantity_total_stock = Math.max(0, (product.quantity_total ?? 0) - (product.quantity_total_exit ?? 0));
+        
         if (productSeries.length > 0) {
           const selectedSerie = productSeries[0];
           const totalAmount = product.unit_price * (selectedSerie?.quantity ?? 0);
@@ -137,19 +139,43 @@ export class InventoryStockComponent implements OnInit {
           } else {
             finalAmount = totalAmount * product.type_change;
           }
-  
+          
+          const totalAmount2 = product.unit_price * (product.quantity_total_stock ?? 0);
+          let finalAmount2 = totalAmount2;
+          if (product.type_change && product.type_change !== 0) {
+            finalAmount2 = totalAmount2 * product.type_change;
+          }
+
   
           return {
             ...product,
             series: productSeries,
             selected_serie: selectedSerie,
             total_amount: totalAmount,
-            final_amount: finalAmount
+            final_amount: finalAmount,
+            quantity_total_stock: product.quantity_total_stock,
+            total_amount_2: totalAmount2,
+            final_amount_2: finalAmount2
           };
         }else {
-          return null; // eliminar el producto si no quedan series
+            // Producto sin series, pero igual lo incluimos con series vacías y sin selected_serie
+            const totalAmount2 = product.unit_price * (product.quantity_total_stock ?? 0);
+            let finalAmount2 = totalAmount2;
+            if (product.type_change && product.type_change !== 0) {
+              finalAmount2 = totalAmount2 * product.type_change;
+            }
+            return {
+              ...product,
+              series: [],
+              selected_serie: null,
+              total_amount: 0,
+              final_amount: 0,
+              quantity_total_stock: product.quantity_total_stock,
+              total_amount_2: totalAmount2,
+              final_amount_2: finalAmount2
+            };
         }
-    }).filter(product => product.series.length > 0);
+    });
     console.log(this.enteredProducts)
     this.originalEnteredProducts = this.enteredProducts
     this.productlist = this.enteredProducts
@@ -376,15 +402,19 @@ export class InventoryStockComponent implements OnInit {
           validSeries.forEach((serie: any) => {
             const quantity = serie.quantity ?? 0;
             const totalAmount = quantity * product.unit_price;
+            const totalAmount2 = product.total_amount_2 ?? (product.unit_price * product.quantity_total_stock);
             const finalAmount = product.type_change ? totalAmount * product.type_change : totalAmount;
-      
+            const finalAmount2 = product.final_amount_2 ?? (product.type_change && product.type_change !== 0 
+              ? totalAmount2 * product.type_change
+              : totalAmount2);
+
             // Creamos una fila para cada serie válida
             exportData.push({
               Código: `M0000${product.id}`,
               Tipo: product.type,
               Importados: product.imported,
               Codigo_minsa: product.minsa_code,
-              Descripción_Minsa: product.minsa_description,
+              Descripción_Requerimiento: product.minsa_description,
               Descripcion: product.description,
               Marca: product.brand,
               Modelo: product.model,
@@ -392,7 +422,9 @@ export class InventoryStockComponent implements OnInit {
               Serie_Lote: serie.name || '',
               Año_Fabricacion: product.date_manufacture,
               Proveedor: product.supplier,
-              Cantidad: quantity,
+              Cantidad_total_serie_lote: quantity,
+               // Aquí va quantity_total (aunque para fila de serie normalmente no cambia, la pongo para que esté en orden)
+              Cantidad_total_stock: product.quantity_total_stock ?? 0,
               Fecha_de_Entrada: product.date,
               Fecha_de_Salida: product.exit_date,
               Guia_Ingreso: product.entry_guide,
@@ -401,13 +433,64 @@ export class InventoryStockComponent implements OnInit {
               Responsable: product.responsible,
               Moneda_Factura: product.coin_bill,
               Precio_Unitario: product.unit_price,
-              Cantidad_x_precio: totalAmount,
+              Cantidad_serie_lote_x_precio: totalAmount,
+              // Aquí va total_amount_2
+              Cantidad_total_x_precio: totalAmount2,
               Tipo_Cambio: product.type_change,
-              Precio_Total: finalAmount,
+              Precio_Total_serie_lote: finalAmount,
+              // Aquí va final_amount_2
+              Precio_total_stock: finalAmount2,
               Factura: product.bill_text,
               Fecha_Factura: product.date_bill
             });
           });
+
+           // Fila resumen usando quantity_total y totales 2, si quantity_total > 0
+          if (validSeries.length === 0 && (product.quantity_total_stock ?? 0) > 0) {
+            const totalAmount2 = product.total_amount_2 ?? (product.unit_price * product.quantity_total_Stock);
+            const finalAmount2 = product.final_amount_2 ?? (product.type_change && product.type_change !== 0
+              ? totalAmount2 * product.type_change
+              : totalAmount2);
+
+            exportData.push({
+              Código: `M0000${product.id}`,
+              Tipo: product.type,
+              Importados: product.imported,
+              Codigo_minsa: product.minsa_code,
+              Descripción_Requerimiento: product.minsa_description,
+              Descripcion: product.description,
+              Marca: product.brand,
+              Modelo: product.model,
+              Procedencia: product.origin,
+              Serie_Lote: '', // Indicativo fila resumen
+              Año_Fabricacion: product.date_manufacture,
+              Proveedor: product.supplier,
+              Cantidad_total_serie_lote: 0,  // Para fila resumen no hay cantidad por serie
+
+              // Aquí va quantity_total con el valor correcto
+              Cantidad_total_stock: product.quantity_total,
+
+              Fecha_de_Entrada: product.date,
+              Guia_Ingreso: product.entry_guide,
+              Proyecto: product.proyect,
+              Responsable: product.responsible,
+              Moneda_Factura: product.coin_bill,
+              Precio_Unitario: product.unit_price,
+              Cantidad_serie_lote_x_precio: 0,  // Cantidad por serie no aplica aquí
+
+              // Aquí va total_amount_2 con valor correcto
+              Cantidad_total_x_precio: totalAmount2,
+
+              Tipo_Cambio: product.type_change,
+              Precio_Total_serie_lote: 0,  // Precio total por serie no aplica aquí
+
+              // Aquí va final_amount_2 con valor correcto
+              Precio_total_stock: finalAmount2,
+
+              Factura: product.bill_text,
+              Fecha_Factura: product.date_bill
+            });
+          }
         });
       
         // Convertir los datos exportados a formato de Excel

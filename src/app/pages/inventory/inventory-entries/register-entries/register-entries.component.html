@@ -49,7 +49,7 @@
             </div>
             <mat-form-field appearance="outline" class="w-full">
               <input matInput formControlName="brand" [(ngModel)]="productobject.brand">
-              <mat-error *ngIf="registerentriesform.controls['brand'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['brand'].invalid">Complete este campo es requerido!</mat-error>
+              <mat-error *ngIf="registerentriesform.controls['brand'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['brand'].invalid">En caso no haya marca colocar S/M</mat-error>
             </mat-form-field>
           </div>
 
@@ -69,7 +69,7 @@
             </div>
             <mat-form-field appearance="outline" class="w-full">
               <input matInput type="number" step="any" formControlName="type_change" [(ngModel)]="productobject.type_change">
-              <mat-error *ngIf="registerentriesform.controls['type_change'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['type_change'].invalid">Complete este campo es requerido!</mat-error>
+              <mat-error *ngIf="registerentriesform.controls['type_change'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['type_change'].invalid">En caso no haya tipo de cambio coloque 0!</mat-error>
             </mat-form-field>
           </div>
 
@@ -79,7 +79,6 @@
             </div>
             <mat-form-field appearance="outline" class="w-full">
               <input matInput formControlName="bill_text" [(ngModel)]="productobject.bill_text">
-              <mat-error *ngIf="registerentriesform.controls['bill_text'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['bill_text'].invalid">Complete este campo es requerido!</mat-error>
             </mat-form-field>
           </div>
 
@@ -91,7 +90,6 @@
               <input matInput [matDatepicker]="picker1" formControlName="date_bill" [(ngModel)]="productobject.date_bill">
               <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
               <mat-datepicker #picker1></mat-datepicker>
-              <mat-error *ngIf="registerentriesform.controls['date_bill'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['date_bill'].invalid">Complete este campo es requerido!</mat-error>
             </mat-form-field>
           </div>
 
@@ -101,7 +99,7 @@
             </div>
             <mat-form-field appearance="outline" class="w-full">
               <input matInput formControlName="model" [(ngModel)]="productobject.model">
-              <mat-error *ngIf="registerentriesform.controls['model'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['model'].invalid">Complete este campo es requerido!</mat-error>
+              <mat-error *ngIf="registerentriesform.controls['model'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['model'].invalid">En caso no haya modelo colocar S/M</mat-error>
             </mat-form-field>
           </div>
 
@@ -111,7 +109,6 @@
             </div>
             <mat-form-field appearance="outline" class="w-full">
               <input matInput formControlName="origin" [(ngModel)]="productobject.origin">
-              <mat-error *ngIf="registerentriesform.controls['origin'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['origin'].invalid">Complete este campo es requerido!</mat-error>
             </mat-form-field>
           </div>
 
@@ -121,7 +118,6 @@
             </div>
             <mat-form-field appearance="outline" class="w-full">
               <input matInput formControlName="series_input" [(ngModel)]="productobject.series_input">
-              <mat-error *ngIf="registerentriesform.controls['series_input'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['series_input'].invalid">Complete este campo es requerido!</mat-error>
             </mat-form-field>
           </div>
 
@@ -133,7 +129,6 @@
               <input matInput [matDatepicker]="picker2" formControlName="date_manufacture" [(ngModel)]="productobject.date_manufacture">
               <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
               <mat-datepicker #picker2></mat-datepicker>
-              <mat-error *ngIf="registerentriesform.controls['date_manufacture'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['date_manufacture'].invalid">Complete este campo es requerido!</mat-error>
             </mat-form-field>
           </div>
 
@@ -149,7 +144,7 @@
 
           <div class="flex items-center gap-2">
             <div class="pb-5 w-48 text-black">
-              <label class="font-semibold">DESCRIPCION MINSA:</label>
+              <label class="font-semibold">DESCRIPCION REQUERIMIENTO:</label>
             </div>
             <mat-form-field appearance="outline" class="w-full">
               <textarea matInput rows="4" formControlName="minsa_description" [(ngModel)]="productobject.minsa_description"></textarea>
@@ -163,7 +158,6 @@
             </div>
             <mat-form-field appearance="outline" class="w-full">
               <input matInput formControlName="supplier" [(ngModel)]="productobject.supplier">
-              <mat-error *ngIf="registerentriesform.controls['supplier'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['supplier'].invalid">Complete este campo es requerido!</mat-error>
             </mat-form-field>
           </div>
 
@@ -173,7 +167,6 @@
             </div>
             <mat-form-field appearance="outline" class="w-full">
               <input matInput formControlName="entry_point" [(ngModel)]="productobject.entry_point">
-              <mat-error *ngIf="registerentriesform.controls['entry_point'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['entry_point'].invalid">Complete este campo es requerido!</mat-error>
             </mat-form-field>
           </div>
 
@@ -185,7 +178,6 @@
               <input matInput [matDatepicker]="picker3" formControlName="date" [(ngModel)]="productobject.date">
               <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
               <mat-datepicker #picker3></mat-datepicker>
-              <mat-error *ngIf="registerentriesform.controls['date'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['date'].invalid">Complete este campo es requerido!</mat-error>
             </mat-form-field>
           </div>
 
@@ -195,7 +187,6 @@
             </div>
             <mat-form-field appearance="outline" class="w-full">
               <input matInput formControlName="entry_guide" [(ngModel)]="productobject.entry_guide">
-              <mat-error *ngIf="registerentriesform.controls['entry_guide'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['entry_guide'].invalid">Complete este campo es requerido!</mat-error>
             </mat-form-field>
           </div>
 
@@ -205,7 +196,6 @@
             </div>
             <mat-form-field appearance="outline" class="w-full">
               <input matInput formControlName="proyect" [(ngModel)]="productobject.proyect">
-              <mat-error *ngIf="registerentriesform.controls['proyect'].dirty && registerentriesform.hasError('required') || registerentriesform.controls['proyect'].invalid">Complete este campo es requerido!</mat-error>
             </mat-form-field>
           </div>
 
