@@ -430,7 +430,7 @@ export class InventoryStockComponent implements OnInit {
 
             // Creamos una fila para cada serie válida
             exportData.push({
-              Código: `M0000${product.id}`,
+              Código: this.formatProductId(product.id),
               Tipo: product.type,
               Importados: product.imported,
               Codigo_minsa: product.minsa_code,
@@ -473,7 +473,7 @@ export class InventoryStockComponent implements OnInit {
               : totalAmount2);
 
             exportData.push({
-              Código: `M0000${product.id}`,
+              Código: this.formatProductId(product.id),
               Tipo: product.type,
               Importados: product.imported,
               Codigo_minsa: product.minsa_code,
