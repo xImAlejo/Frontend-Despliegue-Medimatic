@@ -466,6 +466,26 @@ export class InventoryExitsComponent implements OnInit {
       }
     }
 
+    formatProductId(id: number): string {
+    // Convertir el ID a cadena
+    const productId = id.toString();
+
+    // Formatear según la longitud del ID
+    if (productId.length === 1) {
+      // Un dígito: formato M0000X00
+      return `M0000${productId}00`;
+    } else if (productId.length == 2) {
+      // Dos dígitos: formato M0000XX0 (agrega un 0 al final)
+      return `M0000${productId}0`;
+    } else if (productId.length === 3) {
+      // Tres dígitos: formato M0000XXX (sin 0 al final)
+      return `M0000${productId}`;
+    } else {
+      // Si el ID tiene más de 3 dígitos, mostrará el ID tal cual
+      return `M0000${productId}`;
+    }
+  }
+
     /*exportToExcel(): void {
         const exportData = this.exitedProducts.map(product => {
           const serie = product.selected_serie || {};
