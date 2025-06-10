@@ -19,12 +19,13 @@ import * as FileSaver from 'file-saver';
 export class InventoryExitsComponent implements OnInit {
     @Input() opened: boolean = false;  // Recibe el estado desde el componente padre
     isEditMode: boolean = false;
+    loading: boolean = false;
     userid!:number
     exitedProducts: any[] = [];
     displayedColumns: string[] = ['id','type', 'imported', 'minsa_code', 'minsa_description', 
       'description', 'brand', 'model',
       'origin', 'serie', 'date_manufacture', 'supplier', 'exit_point','quantity_exit','quantity_total_exit', 'date', 'exit_guide', 
-      'proyect', 'responsible', 'coin_bill', 'unit_price', 'total_amount', 'total_amount_2', 'type_change', 'final_amount', 'final_amount_2',
+      'proyect', 'unit_price', 'total_amount_2', 'type_change', 'final_amount_2',
       'bill_text', 'date_bill']; // Agrega el resto
     serieslist:string[] = []
     exitobject!:Exit
@@ -182,6 +183,7 @@ export class InventoryExitsComponent implements OnInit {
   }*/
 
   saveChanges() {
+    this.loading = true; 
     if (!this.exitedProducts?.length) return;
 
     const updatePromises = this.exitedProducts.map(product => {
@@ -226,8 +228,10 @@ export class InventoryExitsComponent implements OnInit {
       console.log("Todos los cambios guardados");
       this.GetProducts();
       this.isEditMode = false;
+      this.loading = false;
     }).catch(error => {
       console.error("Error guardando cambios:", error);
+      this.loading = false;
     });
   }
 
@@ -546,15 +550,15 @@ export class InventoryExitsComponent implements OnInit {
                    Fecha_de_Salida: product.exit_date,
                    Guia_Salida: product.exit_guide,
                    Proyecto: product.proyect,
-                   Responsable: product.responsible,
-                   Moneda_Factura: product.coin_bill,
+                   //Responsable: product.responsible,
+                   //Moneda_Factura: product.coin_bill,
                    Precio_Unitario: product.unit_price,
-                   Cantidad_serie_lote_x_precio: totalAmount,
+                   //Cantidad_serie_lote_x_precio: totalAmount,
                    Cantidad_salida_x_precio: totalAmount2,
                    Tipo_Cambio: product.type_change,
-                   Precio_Total_serie_lote: finalAmount,
+                   //Precio_Total_serie_lote: finalAmount,
                    // Aquí va final_amount_2
-                   Precio_total_salida: finalAmount2,
+                   Monto_total_salida: finalAmount2,
                    Factura: product.bill_text,
                    Fecha_Factura: product.date_bill
                  });
@@ -589,19 +593,19 @@ export class InventoryExitsComponent implements OnInit {
                     Fecha_de_Entrada: product.date,
                     Guia_Ingreso: product.entry_guide,
                     Proyecto: product.proyect,
-                    Responsable: product.responsible,
-                    Moneda_Factura: product.coin_bill,
+                    //Responsable: product.responsible,
+                    //Moneda_Factura: product.coin_bill,
                     Precio_Unitario: product.unit_price,
-                    Cantidad_serie_lote_x_precio: 0,  // Cantidad por serie no aplica aquí
+                    //Cantidad_serie_lote_x_precio: 0,  // Cantidad por serie no aplica aquí
 
                     // Aquí va total_amount_2 con valor correcto
                     Cantidad_salida_x_precio: totalAmount2,
 
                     Tipo_Cambio: product.type_change,
-                    Precio_Total_serie_lote: 0,  // Precio total por serie no aplica aquí
+                    //Precio_Total_serie_lote: 0,  // Precio total por serie no aplica aquí
 
                     // Aquí va final_amount_2 con valor correcto
-                    Precio_total_salida: finalAmount2,
+                    Monto_total_salida: finalAmount2,
 
                     Factura: product.bill_text,
                     Fecha_Factura: product.date_bill

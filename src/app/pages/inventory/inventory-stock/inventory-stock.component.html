@@ -208,44 +208,80 @@
             <td mat-cell *matCellDef="let element">{{ element.proyect}}</td>
           </ng-container>
 
-          <ng-container matColumnDef="responsible">
+          <!--<ng-container matColumnDef="responsible">
             <th mat-header-cell *matHeaderCellDef class="sticky-header bg-sky-300 text-white">RESPONSABLE</th>
             <td mat-cell *matCellDef="let element">{{ element.responsible}}</td>
-          </ng-container>
+          </ng-container>-->
 
-          <ng-container matColumnDef="coin_bill">
+          <!--<ng-container matColumnDef="coin_bill">
             <th mat-header-cell *matHeaderCellDef class="sticky-header bg-sky-300 text-white">MONEDA DE LA FACTURA</th>
             <td mat-cell *matCellDef="let element">{{ element.coin_bill}}</td>
-          </ng-container>
+          </ng-container>-->
 
           <ng-container matColumnDef="unit_price">
-            <th mat-header-cell *matHeaderCellDef class="sticky-header bg-sky-300 text-white">PRECIO UNITARIO EN MONEDA FACTURA</th>
-            <td mat-cell *matCellDef="let element">{{ element.unit_price}}</td>
+            <th mat-header-cell *matHeaderCellDef class="sticky-header bg-sky-300 text-white">PRECIO UNITARIO</th>
+            <td mat-cell *matCellDef="let element">
+              <ng-container *ngIf="element.coin_bill === 'SOLES'">
+              S/.{{ element.unit_price | number:'1.2-2'}}
+              </ng-container>
+                
+              <ng-container *ngIf="element.coin_bill === 'DOLARES'">
+                ${{ element.unit_price | number:'1.2-2'}}
+              </ng-container>
+              
+              <ng-container *ngIf="element.coin_bill === 'EUROS'">
+                {{ element.unit_price | number:'1.2-2'}}€
+              </ng-container>
+            </td>
           </ng-container>
-          <!-- Aqui agregarle una columna en el backend o tal vez lo pueda realizar sin eso-->
+          <!-- Aqui agregarle una columna en el backend o tal vez lo pueda realizar sin eso
           <ng-container matColumnDef="total_amount">
             <th mat-header-cell *matHeaderCellDef class="sticky-header bg-sky-300 text-white">CANTIDAD DE SERIE/LOTE X PRECIO UNIT</th>
             <td mat-cell *matCellDef="let element">{{ element.total_amount | number:'1.2-2'}}</td>
-          </ng-container>
+          </ng-container>-->
 
           <ng-container matColumnDef="total_amount_2">
             <th mat-header-cell *matHeaderCellDef class="sticky-header bg-sky-300 text-white">CANTIDAD TOTAL X PRECIO UNIT</th>
-            <td mat-cell *matCellDef="let element">{{ element.total_amount_2 | number:'1.2-2'}}</td>
+            <td mat-cell *matCellDef="let element">
+              <ng-container *ngIf="element.coin_bill === 'SOLES'">
+              S/.{{ element.total_amount_2 | number:'1.2-2'}}
+              </ng-container>
+                
+              <ng-container *ngIf="element.coin_bill === 'DOLARES'">
+                ${{ element.total_amount_2 | number:'1.2-2'}}
+              </ng-container>
+              
+              <ng-container *ngIf="element.coin_bill === 'EUROS'">
+                {{ element.total_amount_2 | number:'1.2-2'}}€
+              </ng-container>
+            </td>
           </ng-container>
 
           <ng-container matColumnDef="type_change">
-            <th mat-header-cell *matHeaderCellDef class="sticky-header bg-sky-300 text-white">TIPO DE CAMBIO SUNAT DE LA MONEDA</th>
+            <th mat-header-cell *matHeaderCellDef class="sticky-header bg-sky-300 text-white">TIPO DE CAMBIO</th>
             <td mat-cell *matCellDef="let element">{{ element.type_change}}</td>
           </ng-container>
 
-          <ng-container matColumnDef="final_amount">
+          <!--<ng-container matColumnDef="final_amount">
             <th mat-header-cell *matHeaderCellDef class="sticky-header bg-sky-300 text-white">PRECIO TOTAL SERIE/LOTE</th>
             <td mat-cell *matCellDef="let element">{{ element.final_amount | number:'1.2-2'}}</td>
-          </ng-container>
+          </ng-container>-->
 
           <ng-container matColumnDef="final_amount_2">
-            <th mat-header-cell *matHeaderCellDef class="sticky-header bg-sky-300 text-white">PRECIO TOTAL EN STOCK</th>
-            <td mat-cell *matCellDef="let element">{{ element.final_amount_2 | number:'1.2-2'}}</td>
+            <th mat-header-cell *matHeaderCellDef class="sticky-header bg-sky-300 text-white">MONTO TOTAL EN STOCK</th>
+            <td mat-cell *matCellDef="let element">
+              <ng-container *ngIf="element.coin_bill === 'SOLES'">
+              S/.{{ element.final_amount_2 | number:'1.2-2'}}
+              </ng-container>
+                
+              <ng-container *ngIf="element.coin_bill === 'DOLARES'">
+                ${{ element.final_amount_2 | number:'1.2-2'}}
+              </ng-container>
+              
+              <ng-container *ngIf="element.coin_bill === 'EUROS'">
+                {{ element.final_amount_2 | number:'1.2-2'}}€
+              </ng-container>
+            </td>
           </ng-container>
 
           <ng-container matColumnDef="bill_text">

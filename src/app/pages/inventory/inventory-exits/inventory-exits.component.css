@@ -39,7 +39,7 @@ td.mat-cell,
 th.mat-header-cell {
   padding: 12px 16px;
   vertical-align: middle;
-  border: 1px solid #d1d5db; /* Tailwind gray-300 */
+  border: 1px solid black; /* Tailwind gray-300 */
 }
 
 .mat-checkbox .mat-checkbox-frame {
@@ -203,6 +203,27 @@ textarea.mat-input-element {
 
 .paddingt{
   padding-top: 38px;
+}
+
+/* Fondo oscuro con opacidad */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);  /* Fondo oscuro con 40% de opacidad */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;  /* Asegura que el spinner se muestre por encima de otros elementos */
+}
+
+/* Estilo para el mat-spinner, tamaño y posicionamiento */
+.loading-spinner {
+  width: 70px !important;
+  height: 70px !important;
+  color: blue !important; 
 }
 
 /* Responsividad */

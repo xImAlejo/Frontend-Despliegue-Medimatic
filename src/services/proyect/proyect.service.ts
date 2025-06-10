@@ -8,8 +8,8 @@ import { Proyect } from 'src/app/models/proyect';
 })
 export class ProyectService {
 
-  //basePath = 'http://localhost:8000/proyect/ProyectViewSets/';
-  basePath = 'https://medimatic-services-zzy7.onrender.com/coordination/CoordinationViewSets/';
+  basePath = 'http://localhost:8000/proyect/ProyectViewSets/';
+    //basePath = 'https://medimatic-services-zzy7.onrender.com/coordination/CoordinationViewSets/';
   
     httpOptions = {
       headers: new HttpHeaders({
