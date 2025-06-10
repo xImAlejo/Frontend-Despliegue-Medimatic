@@ -488,7 +488,7 @@ export class InventoryStockComponent implements OnInit {
               Cantidad_total_serie_lote: 0,  // Para fila resumen no hay cantidad por serie
 
               // Aquí va quantity_total con el valor correcto
-              Cantidad_total_stock: product.quantity_total,
+              Cantidad_total_stock: product.quantity_total_stock,
 
               Fecha_de_Entrada: product.date,
               Guia_Ingreso: product.entry_guide,
