@@ -183,6 +183,19 @@
     justify-content: center;
 }
 
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Oscurecer la pantalla */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Asegurarse de que el spinner esté por encima de otros elementos */
+}
+
 /* Aseguramos que todo funcione bien en dispositivos pequeños */
 @media (max-width: 600px) {
     .login-container {

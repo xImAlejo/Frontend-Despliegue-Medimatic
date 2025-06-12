@@ -26,4 +26,9 @@
           </form>
       </mat-card-content>
     </mat-card>
+
+      <!-- Spinner de carga -->
+    <div *ngIf="isLoading" class="overlay">
+      <mat-spinner></mat-spinner>
+    </div>
 </div>

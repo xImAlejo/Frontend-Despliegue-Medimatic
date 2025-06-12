@@ -14,6 +14,7 @@ export class LoginComponent implements OnInit {
   hide:boolean = true
   loginobject!:Login
   loginform!:FormGroup
+  isLoading: boolean = false;
 
   constructor(private formBuilder:FormBuilder, private AuthService:AuthService, private Router:Router, private TokenService: TokenService) {
     this.loginobject = {} as Login
@@ -26,9 +27,11 @@ export class LoginComponent implements OnInit {
      })
   }
   Login(){
+    this.isLoading = true;
     console.log(this.loginobject)
 
     this.AuthService.Login(this.loginobject).subscribe((response:any)=>{
+        this.isLoading = false;
         console.log(response)
         this.TokenService.setToken(response.token)
         if(this.TokenService.isCoordination()){
@@ -48,6 +51,7 @@ export class LoginComponent implements OnInit {
           this.Router.navigate(['inventory','register','entries',this.TokenService.getId()])
         }
     },err=>{
+        this.isLoading = false;
         alert("usuario o contraseña incorrecta")
         console.log(err)
     })
