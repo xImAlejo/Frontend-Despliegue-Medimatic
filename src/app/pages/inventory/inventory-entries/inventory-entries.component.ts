@@ -210,8 +210,12 @@ export class InventoryEntriesComponent implements OnInit {
       this.serieService.getAll().toPromise(),
       this.entryService.getAll().toPromise()
     ]).then(([productsRes, seriesRes, entriesRes]) => {
+      const sortedProducts = (productsRes as any).rows.sort((a: any, b: any) => {
+      return a.id - b.id; // Ordena los productos por el código (id)
+      });
+      
       this.filterEnteredProducts(
-        (productsRes as any).rows,
+        sortedProducts,
         (seriesRes as any).rows,
         (entriesRes as any).rows
       );

@@ -281,8 +281,12 @@ export class InventoryExitsComponent implements OnInit {
         this.serieService.getAll().toPromise(),
         this.exitService.getAll().toPromise()
       ]).then(([productsRes, seriesRes, exitsRes]) => {
+        const sortedProducts = (productsRes as any).rows.sort((a: any, b: any) => {
+        return a.id - b.id; // Ordena los productos por el código (id)
+        });
+        
         this.filterExitedProducts(
-          (productsRes as any).rows,
+          sortedProducts,
           (seriesRes as any).rows,
           (exitsRes as any).rows
         );
