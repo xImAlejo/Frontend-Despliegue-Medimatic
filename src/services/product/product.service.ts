@@ -83,7 +83,7 @@ export class ProductService {
   }
   
   delete(id: any){
-    return this.http.delete(`${this.basePath}${id}`, this.httpOptions)
+    return this.http.delete(`${this.basePath}${id}/`, this.httpOptions)
       .pipe(
         retry(2),
         catchError(this.handleError));

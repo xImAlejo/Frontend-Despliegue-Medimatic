@@ -27,7 +27,7 @@ export class InventoryEntriesComponent implements OnInit {
     'description', 'brand', 'model',
     'origin', 'serie', 'date_manufacture', 'supplier', 'entry_point','quantity','quantity_total','date', 'entry_guide', 
     'proyect', 'unit_price', 'total_amount_2', 'type_change',
-    'final_amount_2', 'bill_text', 'date_bill', 'edit_serie']; // Agrega el resto
+    'final_amount_2', 'bill_text', 'date_bill', 'edit_serie','delete_product']; // Agrega el resto
   serieslist:string[] = []
   productobject!: Product
   pipedate:DatePipe = new DatePipe("en-US")
@@ -448,6 +448,14 @@ export class InventoryEntriesComponent implements OnInit {
     
   }
 
+  DeleteProduct(idproduct:any){
+    console.log(idproduct)
+    this.productService.delete(idproduct).subscribe((response:any) =>{
+      console.log("Producto Eliminado!")
+      this.GetProducts()
+    })
+  }
+  
   formatProductId(id: number): string {
     // Convertir el ID a cadena
     const productId = id.toString();
