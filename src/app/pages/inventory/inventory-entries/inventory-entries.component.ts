@@ -151,6 +151,15 @@ export class InventoryEntriesComponent implements OnInit {
 
   updateProductFields(product: any): Promise<void> {
     return new Promise((resolve, reject) => {
+      this.productobject.type = product.type
+      this.productobject.imported = product.imported
+      this.productobject.description = product.description
+      this.productobject.brand = product.brand
+      this.productobject.unit_price = product.unit_price
+      this.productobject.type_change = product.type_change
+      this.productobject.model = product.model
+      this.productobject.minsa_code = product.minsa_code
+      this.productobject.minsa_description = product.minsa_description
       this.startdateformatselected = this.pipedate.transform(product.date_manufacture, 'yyyy-MM-dd');
       this.productobject.date_manufacture = this.startdateformatselected
       this.startdateformatselected = this.pipedate.transform(product.date, 'yyyy-MM-dd');
@@ -165,10 +174,19 @@ export class InventoryEntriesComponent implements OnInit {
       this.productobject.origin = product.origin;
       this.productobject.quantity_total = product.quantity_total;
 
-      this.productService.UpdateDatesandSupplierandEnterPointandEnterGuide(product.id, this.productobject).subscribe({
+      this.productService.UpdateAll(product.id, this.productobject).subscribe({
         next: () => {
           this.productService.getbyId(product.id).subscribe({
             next: updated => {
+              product.type = updated.type
+              product.imported = updated.imported
+              product.description = updated.description
+              product.brand = updated.brand
+              product.unit_price = updated.unit_price
+              product.type_change = updated.type_change
+              product.model = updated.model
+              product.minsa_code = updated.minsa_code
+              product.minsa_description = updated.minsa_description
               product.date_manufacture = updated.date_manufacture;
               product.date = updated.date;
               product.date_bill = updated.date_bill;

@@ -75,8 +75,8 @@ export class ProductService {
         catchError(this.handleError));
   }
 
-  UpdateDatesandSupplierandEnterPointandEnterGuide(id:any, item:any): Observable<Product> {
-    return this.http.put<Product>(`${this.basePath}${id}/UpdateDatesandSupplierandEnterPointandEnterGuide/`, JSON.stringify(item), this.httpOptions)
+  UpdateAll(id:any, item:any): Observable<Product> {
+    return this.http.put<Product>(`${this.basePath}${id}/UpdateAll/`, JSON.stringify(item), this.httpOptions)
       .pipe(
         retry(2),
         catchError(this.handleError));

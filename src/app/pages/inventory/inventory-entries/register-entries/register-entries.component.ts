@@ -53,6 +53,7 @@ export class RegisterEntriesComponent implements OnInit {
           responsible:['',Validators.required],
           coin_bill:['',Validators.required],
           series_input:['',Validators.required],
+          quantity_total:['',Validators.required]
     })
   }
 
