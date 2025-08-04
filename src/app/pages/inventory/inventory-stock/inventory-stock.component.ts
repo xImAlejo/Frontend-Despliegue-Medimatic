@@ -25,7 +25,7 @@ export class InventoryStockComponent implements OnInit {
     'description', 'brand', 'model',
     'origin', 'serie', 'date_manufacture', 'supplier','quantity_enter','quantity_total_stock','date', 'exit_date', 'entry_guide', 'exit_guide', 
     'proyect', 'unit_price', 'total_amount_2', 'type_change', 'final_amount_2',
-    'bill_text', 'date_bill']; // Agrega el resto
+    'bill_text', 'date_bill','delete_product']; // Agrega el resto
   productobject!:Product
   serieobject!:Serie
   serieslist:any[] = []
@@ -62,8 +62,9 @@ export class InventoryStockComponent implements OnInit {
       this.exitService.getAll().toPromise(),
     ]).then(([productsRes, seriesRes, entriesRes, exitRes]) => {
       const sortedProducts = (productsRes as any).rows.sort((a: any, b: any) => {
-        return a.id - b.id; // Ordena los productos por el código (id)
+      return a.id - b.id; // Ordena los productos por el código (id)
       });
+
       this.filterEnteredProducts(
         sortedProducts,
         (seriesRes as any).rows,
@@ -224,18 +225,19 @@ export class InventoryStockComponent implements OnInit {
     
   }
 
-  deployproductsbyProductId(id:any){
-    if (!id) {
+  deployproductsbyMinsaCode(minsa_code:any){
+    if (!minsa_code) {
       this.enteredProducts = this.originalEnteredProducts // Si no hay fecha seleccionada, recarga todos
       return;
     }
 
     this.enteredProducts = this.originalEnteredProducts.filter(product => {
-      return product.id === id;
+      return product.minsa_code && product.minsa_code.toLowerCase().includes(minsa_code.toLowerCase());
     });
   
-    console.log("Productos filtrados por fecha:", this.enteredProducts);
+    console.log("Productos filtrados por codigo minsa:", this.enteredProducts);
   }
+
 
   deployproductsbyDescription(description:any){
     if (!description) {
@@ -366,6 +368,14 @@ export class InventoryStockComponent implements OnInit {
       // Si el ID tiene más de 3 dígitos, mostrará el ID tal cual
       return `M0000${productId}`;
     }
+  }
+
+  DeleteProduct(idproduct:any){
+    console.log(idproduct)
+    this.productService.delete(idproduct).subscribe((response:any) =>{
+      console.log("Producto Eliminado!")
+      this.GetProducts()
+    })
   }
 
   /*exportToExcel(): void {

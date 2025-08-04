@@ -173,7 +173,7 @@ export class InventoryEntriesComponent implements OnInit {
       this.productobject.proyect = product.proyect;
       this.productobject.origin = product.origin;
       this.productobject.quantity_total = product.quantity_total;
-
+      
       this.productService.UpdateAll(product.id, this.productobject).subscribe({
         next: () => {
           this.productService.getbyId(product.id).subscribe({
@@ -231,7 +231,7 @@ export class InventoryEntriesComponent implements OnInit {
       const sortedProducts = (productsRes as any).rows.sort((a: any, b: any) => {
       return a.id - b.id; // Ordena los productos por el código (id)
       });
-      
+
       this.filterEnteredProducts(
         sortedProducts,
         (seriesRes as any).rows,
@@ -286,13 +286,14 @@ export class InventoryEntriesComponent implements OnInit {
       const productSeries = series
         .filter(serie => serie.product == product.id)
         .map(serie => {
-          // Buscar la entry correspondiente a esta serie
           const entry = entries.find(entry => entry.serie == serie.id);
+          let q = entry ? entry.quantity : 0;
+          q = (q == null || q === '') ? 0 : q;
           return {
             ...serie,
-            quantity: entry ? entry.quantity : null // Si no hay entry, cantidad 0
+            quantity: q
           };
-        }).filter(serie => serie.quantity !== 0);
+        });
       
       // Convertir fechas string a objetos Date locales para evitar desfase por zona horaria
       product.date_manufacture = this.parseDateToLocal(product.date_manufacture);
@@ -387,17 +388,17 @@ export class InventoryEntriesComponent implements OnInit {
     
   }
 
-  deployproductsbyProductId(id:any){
-    if (!id) {
+  deployproductsbyMinsaCode(minsa_code:any){
+    if (!minsa_code) {
       this.enteredProducts = this.originalEnteredProducts // Si no hay fecha seleccionada, recarga todos
       return;
     }
 
     this.enteredProducts = this.originalEnteredProducts.filter(product => {
-      return product.id === id;
+      return product.minsa_code && product.minsa_code.toLowerCase().includes(minsa_code.toLowerCase());
     });
   
-    console.log("Productos filtrados por codigo:", this.enteredProducts);
+    console.log("Productos filtrados por codigo minsa:", this.enteredProducts);
   }
 
   deployproductsbyDescription(description:any){
@@ -473,7 +474,7 @@ export class InventoryEntriesComponent implements OnInit {
       this.GetProducts()
     })
   }
-  
+
   formatProductId(id: number): string {
     // Convertir el ID a cadena
     const productId = id.toString();

@@ -221,6 +221,73 @@ textarea.mat-input-element {
   color: blue !important; 
 }
 
+.table-container table {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+.sticky-header-col-1 {
+  position: sticky; left: 0; z-index: 30;
+  min-width: 120px; max-width: 120px; width: 120px;
+}
+.sticky-col-1 {
+  position: sticky; top:0 ;left: 0; z-index: 21;
+  min-width: 120px; max-width: 120px; width: 120px;
+}
+
+.sticky-header-col-2 {
+  position: sticky; left: 120px; z-index: 30;
+  min-width: 120px; max-width: 120px; width: 120px;
+}
+.sticky-col-2 {
+  position: sticky; top:0; left: 120px; z-index: 21;
+  min-width: 120px; max-width: 120px; width: 120px;
+}
+
+.sticky-header-col-3 {
+  position: sticky; left: 240px; z-index: 30;
+  min-width: 120px; max-width: 120px; width: 120px;
+}
+.sticky-col-3 {
+  position: sticky; top:0; left: 240px; z-index: 21;
+  min-width: 120px; max-width: 120px; width: 120px;
+}
+
+.sticky-header-col-4 {
+  position: sticky; left: 360px; z-index: 30;
+  min-width: 120px; max-width: 120px; width: 120px;
+}
+.sticky-col-4 {
+  position: sticky; top:0; left: 360px; z-index: 21;
+  min-width: 120px; max-width: 120px; width: 120px;
+}
+
+.sticky-header-col-5 {
+  position: sticky; left: 480px; z-index: 30;
+  min-width: 120px; max-width: 120px; width: 120px;
+}
+.sticky-col-5 {
+  position: sticky; top:0; left: 480px; z-index: 21;
+  min-width: 120px; max-width: 120px; width: 120px;
+}
+
+.sticky-header-col-6 {
+  position: sticky; left: 600px; z-index: 30;
+  min-width: 120px; max-width: 120px; width: 120px;
+}
+.sticky-col-6 {
+  position: sticky; top:0; left: 600px; z-index: 21;
+  min-width: 120px; max-width: 120px; width: 120px;
+}
+
+.sticky-header-col-1, .sticky-header-col-2, .sticky-header-col-3, .sticky-header-col-4, .sticky-header-col-5, .sticky-header-col-6 {
+  top: 0;
+  background: #0ea5e9 !important;
+}
+.sticky-col-1, .sticky-col-2, .sticky-col-3, .sticky-col-4, .sticky-col-5, .sticky-col-6 {
+  background: #f9f9f9 !important;
+}
+
 /* Responsividad */
 @media (max-width: 768px) {
   .sidenav {

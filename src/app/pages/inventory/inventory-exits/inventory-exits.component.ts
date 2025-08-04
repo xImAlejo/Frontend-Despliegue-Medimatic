@@ -284,7 +284,7 @@ export class InventoryExitsComponent implements OnInit {
         const sortedProducts = (productsRes as any).rows.sort((a: any, b: any) => {
         return a.id - b.id; // Ordena los productos por el código (id)
         });
-        
+
         this.filterExitedProducts(
           sortedProducts,
           (seriesRes as any).rows,
@@ -305,13 +305,14 @@ export class InventoryExitsComponent implements OnInit {
         const productSeries = series
           .filter(serie => serie.product == product.id)
           .map(serie => {
-            // Buscar la entry correspondiente a esta serie
             const exit = exits.find(exit => exit.serie == serie.id);
+            let q = exit ? exit.quantity : 0;
+            q = (q == null || q === '') ? 0 : q;
             return {
               ...serie,
-              quantity: exit ? exit.quantity : null // Si no hay entry, cantidad 0
+              quantity: q
             };
-          }).filter(serie => serie.quantity !== 0);
+          });
         
         // Convertir fechas string a objetos Date locales para evitar desfase por zona horaria
         product.exit_date = this.parseDateToLocal(product.exit_date);
@@ -404,17 +405,17 @@ export class InventoryExitsComponent implements OnInit {
       
     }
 
-    deployproductsbyProductId(id:any){
-      if (!id) {
+    deployproductsbyMinsaCode(minsa_code:any){
+      if (!minsa_code) {
         this.exitedProducts = this.originalExitedProducts // Si no hay fecha seleccionada, recarga todos
         return;
       }
   
       this.exitedProducts = this.originalExitedProducts.filter(product => {
-        return product.id === id;
+        return product.minsa_code && product.minsa_code.toLowerCase().includes(minsa_code.toLowerCase());
       });
     
-      console.log("Productos filtrados por fecha:", this.exitedProducts);
+      console.log("Productos filtrados por codigo minsa:", this.exitedProducts);
     }
 
     deployproductsbyDescription(description:any){
@@ -471,24 +472,24 @@ export class InventoryExitsComponent implements OnInit {
     }
 
     formatProductId(id: number): string {
-    // Convertir el ID a cadena
-    const productId = id.toString();
+      // Convertir el ID a cadena
+      const productId = id.toString();
 
-    // Formatear según la longitud del ID
-    if (productId.length === 1) {
-      // Un dígito: formato M0000X00
-      return `M0000${productId}00`;
-    } else if (productId.length == 2) {
-      // Dos dígitos: formato M0000XX0 (agrega un 0 al final)
-      return `M0000${productId}0`;
-    } else if (productId.length === 3) {
-      // Tres dígitos: formato M0000XXX (sin 0 al final)
-      return `M0000${productId}`;
-    } else {
-      // Si el ID tiene más de 3 dígitos, mostrará el ID tal cual
-      return `M0000${productId}`;
+      // Formatear según la longitud del ID
+      if (productId.length === 1) {
+        // Un dígito: formato M0000X00
+        return `M0000${productId}00`;
+      } else if (productId.length == 2) {
+        // Dos dígitos: formato M0000XX0 (agrega un 0 al final)
+        return `M0000${productId}0`;
+      } else if (productId.length === 3) {
+        // Tres dígitos: formato M0000XXX (sin 0 al final)
+        return `M0000${productId}`;
+      } else {
+        // Si el ID tiene más de 3 dígitos, mostrará el ID tal cual
+        return `M0000${productId}`;
+      }
     }
-  }
 
     /*exportToExcel(): void {
         const exportData = this.exitedProducts.map(product => {

@@ -59,6 +59,7 @@ export class RegisterEntriesComponent implements OnInit {
 
   onReset(){
     this.registerentriesform.reset();
+    this.productobject = {} as Product; // Limpia el objeto para el siguiente registr
   }
 
   CreateEntries(){
