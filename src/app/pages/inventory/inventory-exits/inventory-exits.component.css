@@ -269,20 +269,20 @@ textarea.mat-input-element {
 
 .sticky-header-col-5 {
   position: sticky; left: 480px; z-index: 30;
-  min-width: 120px; max-width: 120px; width: 120px;
+  min-width: 240px; max-width: 240px; width: 240px;
 }
 .sticky-col-5 {
   position: sticky; top:0; left: 480px; z-index: 21;
-  min-width: 120px; max-width: 120px; width: 120px;
+  min-width: 240px; max-width: 240px; width: 240px;
 }
 
 .sticky-header-col-6 {
-  position: sticky; left: 600px; z-index: 30;
-  min-width: 120px; max-width: 120px; width: 120px;
+  position: sticky; left: 720px; z-index: 30;
+  min-width: 240px; max-width: 240px; width: 240px;
 }
 .sticky-col-6 {
-  position: sticky; top:0; left: 600px; z-index: 21;
-  min-width: 120px; max-width: 120px; width: 120px;
+  position: sticky; top:0; left: 720px; z-index: 21;
+  min-width: 240px; max-width: 240px; width: 240px;
 }
 
 .sticky-header-col-1, .sticky-header-col-2, .sticky-header-col-3, .sticky-header-col-4, .sticky-header-col-5, .sticky-header-col-6 {
